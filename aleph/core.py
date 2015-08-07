@@ -30,7 +30,7 @@ login_manager.login_view = 'ui'
 es = Elasticsearch(app.config.get('ELASTICSEARCH_URL'))
 es_index = app.config.get('ELASTICSEARCH_INDEX', app_name)
 
-queue_name = app_name + '_q'
+queue_name = app_name + '_q_debug'
 app.config['CELERY_DEFAULT_QUEUE'] = queue_name
 app.config['CELERY_QUEUES'] = (
     Queue(queue_name, Exchange(queue_name), routing_key=queue_name),

@@ -9,6 +9,7 @@ from aleph.model import Source
 from aleph.core import db
 from aleph import authz
 
+import logging
 
 blueprint = Blueprint('sources', __name__)
 
@@ -50,9 +51,11 @@ def view(slug):
 
 @blueprint.route('/api/1/sources/<slug>/crawl', methods=['POST', 'PUT'])
 def crawl(slug):
+    logging.debug('starting a crawl of %s' % slug)
     authz.require(authz.source_write(slug))
     source = obj_or_404(Source.by_slug(slug))
     crawl_source.delay(source.slug)
+    logging.debug('started crawl')
     return jsonify({'status': 'ok'})
 
 

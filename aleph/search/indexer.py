@@ -10,7 +10,7 @@ from aleph.search.mapping import DOC_TYPE
 from aleph.search.attributes import generate_attributes
 
 log = logging.getLogger(__name__)
-
+log.setLevel(logging.DEBUG)
 
 def html_summary(html):
     if not isinstance(html, unicode):
@@ -20,6 +20,7 @@ def html_summary(html):
 
 
 def index_package(package, plain_text, normalized_text):
+    log.debug('starting to index package %s' % package)
     es.json_encoder = JSONEncoder
     body = {
         'id': package.id,
@@ -55,4 +56,9 @@ def index_package(package, plain_text, normalized_text):
     body['attributes'] = generate_attributes(source.meta)
 
     log.info("Indexing: %r", body['title'])
+    #log.debug(body)
+    #with open('/tmp/alephlog', 'a') as outf:
+    #    import json
+    #    outf.write(json.dumps(body))
     es.index(es_index, DOC_TYPE, body, package.id)
+                   

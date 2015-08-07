@@ -2,6 +2,8 @@ from colander import Invalid
 from flask import request
 from apikit import jsonify
 
+import logging
+
 from aleph.core import app, login_manager
 from aleph.views.ui import ui # noqa
 from aleph.assets import assets # noqa
@@ -29,7 +31,6 @@ app.register_blueprint(exports_api)
 app.register_blueprint(sources_api)
 app.register_blueprint(crawlers_api)
 
-
 @login_manager.request_loader
 def load_user_from_request(request):
     api_key = request.headers.get('X-API-Key') \
@@ -40,6 +41,7 @@ def load_user_from_request(request):
 
 @app.before_request
 def before():
+    logging.debug('handling %s' % request.url)
     request.authz_sources = {}
     request.authz_lists = {}
 
