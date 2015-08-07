@@ -16,6 +16,11 @@
         [<a ng-href="{{doc.archive_url}}" target="_self">cached</a>]
       </span>
       <span class="summary">{{doc.summary}}</span>
+      <table class="attribute-table">
+	<tr ng-repeat="attrib in doc.attributes">
+	  <td>{{attrib.name}}</td><td>{{attrib.value}}</td>
+	</tr>
+	</table>
     </div>
   </div>
 
