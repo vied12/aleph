@@ -11,7 +11,7 @@ from aleph.search.queries import document_query # noqa
 PAGE = 500
 
 log = logging.getLogger(__name__)
-
+log.setLevel(logging.DEBUG)
 
 def init_search():
     log.info("Creating ElasticSearch index and uploading mapping...")
