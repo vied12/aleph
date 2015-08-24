@@ -4,7 +4,7 @@ from werkzeug.datastructures import MultiDict
 
 DEFAULT_FIELDS = ['title', 'name', 'extension', 'collection',
                   'id', 'updated_at', 'slug', 'source_url', 'source',
-                  'summary']
+                  'summary', 'attributes']
 
 QUERY_FIELDS = ['title', 'source_url', 'summary', 'extension', 'mime_type',
                 'text', 'entities.label', 'attributes.value']
@@ -36,7 +36,7 @@ def get_list_facets(args):
 
 
 def document_query(args, fields=DEFAULT_FIELDS, sources=None, lists=None,
-                   facets=True):
+                   facets=True, highlights=False):
     if not isinstance(args, MultiDict):
         args = MultiDict(args)
     qstr = args.get('q', '').strip()
@@ -168,6 +168,15 @@ def document_query(args, fields=DEFAULT_FIELDS, sources=None, lists=None,
         'aggregations': aggs,
         '_source': fields
     }
+
+    if highlights:
+        q['highlight'] = {
+            'fields': { '_all': {}}}
+
+        # XXX for some reason, ES won't give us both highlights and
+        # aggregation data
+        q.pop('aggregations')
+        
     # import json
     # print json.dumps(q, indent=2)
     return q

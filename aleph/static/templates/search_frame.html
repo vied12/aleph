@@ -6,12 +6,13 @@
           Documents <span class="badge">{{result.total || ''}}</span>
         </a>
       </li>
+      <!--
       <li role="presentation" ng-class="{'active': query.mode() == 'graph'}">
         <a ng-href="/#/search/graph?{{ query.queryString() }}">Actor network</a>
       </li>
       <li role="presentation" ng-class="{'active': query.mode() == 'export'}">
         <a ng-href="/#/search/export?{{ query.queryString() }}">Export</a>
-      </li>
+      </li>-->
     </ul>
 
     <div class="alert alert-warning" ng-show="result.limit > 0 && !result.total">
