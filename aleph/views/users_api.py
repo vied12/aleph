@@ -12,7 +12,7 @@ blueprint = Blueprint('users', __name__)
 
 @blueprint.route('/api/1/users', methods=['GET'])
 def index():
-    authz.require(authz.logged_in())
+    authz.require(authz.is_admin())
     users = []
     for user in User.all():
         data = user.to_dict()
@@ -21,8 +21,9 @@ def index():
     return jsonify({'results': users, 'total': len(users)})
 
 
-@blueprint.route('/api/1/users/<id>', methods=['GET'])
+@blueprint.route('/api/1/users/<int:id>', methods=['GET'])
 def view(id):
+    authz.require(id == current_user.id or authz.is_admin())
     user = obj_or_404(User.by_id(id))
     data = user.to_dict()
     if user.id != current_user.id:
@@ -30,10 +31,10 @@ def view(id):
     return jsonify(data)
 
 
-@blueprint.route('/api/1/users/<id>', methods=['POST', 'PUT'])
+@blueprint.route('/api/1/users/<int:id>', methods=['POST', 'PUT'])
 def update(id):
     user = obj_or_404(User.by_id(id))
-    authz.require(user.id == current_user.id)
+    authz.require(user.id == current_user.id or authz.is_admin())
     user.update(request_data())
     db.session.add(user)
     db.session.commit()

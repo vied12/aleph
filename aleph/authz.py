@@ -42,6 +42,9 @@ def list_write(id):
 def logged_in():
     return current_user.is_authenticated()
 
+def is_admin():
+    return current_user.is_authenticated() and current_user.is_admin
+
 
 def require(pred):
     if not pred:

@@ -1,6 +1,7 @@
 import os
 from flask import render_template
 
+from aleph import authz
 from aleph.core import app
 
 
@@ -16,8 +17,6 @@ def angular_templates():
 
 @app.route('/lists/<path:id>')
 @app.route('/lists')
-@app.route('/sources/<path:slug>')
-@app.route('/sources')
 @app.route('/search')
 @app.route('/search/export')
 @app.route('/search/graph')
@@ -25,4 +24,11 @@ def angular_templates():
 @app.route('/login')
 @app.route('/')
 def ui(**kwargs):
+    return render_template("layout.html", templates=angular_templates())
+
+
+@app.route('/sources/<path:slug>')
+@app.route('/sources')
+def ui_admin(**kwargs):
+    authz.require(authz.is_admin())
     return render_template("layout.html", templates=angular_templates())
