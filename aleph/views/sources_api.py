@@ -30,7 +30,7 @@ def index():
 
 @blueprint.route('/api/1/sources', methods=['POST', 'PUT'])
 def create():
-    authz.require(authz.logged_in())
+    authz.require(auths.is_admin())
     src = Source.create(request_data(), current_user)
     db.session.commit()
     return view(src.slug)
@@ -38,7 +38,7 @@ def create():
 
 @blueprint.route('/api/1/sources/<slug>', methods=['GET'])
 def view(slug):
-    authz.require(authz.source_read(slug))
+    authz.require(authz.source_read(slug) and authz.is_admin())
     source = obj_or_404(Source.by_slug(slug))
     etag_cache_keygen(source)
     data = source.to_dict()
