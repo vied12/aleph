@@ -1,4 +1,6 @@
 from copy import deepcopy
+import logging
+import re
 
 from werkzeug.datastructures import MultiDict
 
@@ -39,6 +41,153 @@ def document_query(args, fields=DEFAULT_FIELDS, sources=None, lists=None,
                    facets=True, highlights=False):
     if not isinstance(args, MultiDict):
         args = MultiDict(args)
+
+    if True:
+        logging.debug('treating as regex')
+        filtered_q = _build_qstr_query(args)
+        filtered_q = _add_entities_filter(filtered_q, args)
+        filtered_q = _add_attribute_filter(filtered_q, args)
+        filtered_q = _add_collections_filter(filtered_q, args, sources)
+        aggs = _make_aggregations(facets, filtered_q, args, lists)
+        q = {
+        'query': filtered_q,
+        'aggregations': aggs,
+        '_source': fields
+        }
+
+    else:
+        logging.debug('treating as non-regex')
+        filtered_q = _build_basic_query(args)
+        filtered_q = _add_entities_filter(filtered_q, args)
+        filtered_q = _add_attribute_filter(filtered_q, args)
+        filtered_q = _add_collections_filter(filtered_q, args, sources)
+        aggs = _make_aggregations(facets, filtered_q, args, lists)
+        q = {
+        'query': filtered_q,
+        'aggregations': aggs,
+        '_source': fields
+        }
+
+        
+
+    if highlights:
+        q['highlight'] = _make_highlights(fields)
+
+    import json
+    print json.dumps(q, indent=2)
+    print json.dumps(q)
+    return q
+
+def _build_regex_query(args, fields=QUERY_FIELDS):
+    qstr = args.get('q', '').strip()
+    qstr = qstr.replace('regex:', '')
+    logging.info('building regex query')
+    logging.info(fields)
+    logging.debug('qstr is %s' % qstr)
+    query =  {
+        "regexp": {
+            "text": qstr,
+            #"fields": ["title", "text"],
+            #"analyze_wildcard": True,
+            }
+        }
+    '''multi_query = {
+        "bool": {
+            "should": [
+                {"regexp": {
+                    "text": {
+                        "value": qstr,
+                        "flags": "NONE",
+                    }
+                 }},
+                #{"regexp": {
+                #    "title": qstr,
+                #}},
+            ]
+        }
+    }
+    '''
+    return query
+
+def _partial_regex(querypart):
+    querypart = querypart.replace('regex:', '')
+    return {
+        "regexp": {
+            "text": querypart,
+            #"fields": ["title", "text"],
+            #"analyze_wildcard": True,
+            }
+        }
+
+
+
+def _build_advanced_query(args):
+    qstr = args.get('q', '').strip()
+    if len(qstr):
+        regex_pattern = 'regex:\S+'
+        regexes = [_partial_regex(x) for x in re.findall(regex_pattern, qstr)]
+        qstr = re.subn(regex_pattern, '', qstr)[0]
+        filtered_q = {
+            "bool": {
+                "must": [{
+                    "multi_match": {
+                        "query": qstr,
+                        "fields": QUERY_FIELDS,
+                        "type": "best_fields",
+                        "cutoff_frequency": 0.0007,
+                        "operator": "and",
+                    },
+                }],
+                "should": [
+                    {
+                    "multi_match": {
+                        "query": qstr,
+                        "fields": QUERY_FIELDS,
+                        "type": "phrase"
+                    },
+                },
+                               
+                           ]
+            }
+        }
+        filtered_q['bool']['must'].append(regexes)
+    else:
+        filtered_q = {'match_all': {}}
+    return filtered_q
+
+def _build_qstr_query(args):
+    qstr = args.get('q', '').strip()
+    if len(qstr):
+        filtered_q = {
+            "bool": {
+                "must": [
+                    {
+                        "query_string": {
+                            "query": qstr,
+                            "fields": QUERY_FIELDS,
+                            }
+                    },
+
+                ],
+                
+                #"should": [
+                #    {
+                #    "multi_match": {
+                #        "query": qstr,
+                #        "fields": QUERY_FIELDS,
+                #        "type": "phrase"
+                #    },
+                #},
+                #               
+                #           ]
+            }
+        }
+    else:
+        filtered_q = {'match_all': {}}
+    return filtered_q
+
+
+def _build_basic_query(args):
     qstr = args.get('q', '').strip()
     if len(qstr):
         filtered_q = {
@@ -63,12 +212,17 @@ def document_query(args, fields=DEFAULT_FIELDS, sources=None, lists=None,
         }
     else:
         filtered_q = {'match_all': {}}
+    return filtered_q
 
+
+def _add_entities_filter(filtered_q, args):
     # entities filter
     for entity in args.getlist('entity'):
         cf = {'term': {'entities.id': entity}}
         filtered_q = add_filter(filtered_q, cf)
+    return filtered_q
 
+def _add_attribute_filter(filtered_q, args):
     for key, value in args.items():
         if not key.startswith('attribute-'):
             continue
@@ -87,7 +241,9 @@ def document_query(args, fields=DEFAULT_FIELDS, sources=None, lists=None,
             }
         }
         filtered_q = add_filter(filtered_q, af)
-
+    return filtered_q
+        
+def _add_collections_filter(filtered_q, args, sources):
     q = deepcopy(filtered_q)
 
     # collections filter
@@ -101,8 +257,19 @@ def document_query(args, fields=DEFAULT_FIELDS, sources=None, lists=None,
 
         all_coll_f = {'terms': {'collection': sources}}
         filtered_q = add_filter(filtered_q, all_coll_f)
+    return q
 
-    aggs = {}
+
+def _make_highlights(fields):
+    # XXX this should also include other fields
+    highlights = {'fields': {}}
+    for field in fields:
+        highlights['fields'][field] = {}
+    return highlights
+
+def _make_aggregations(facets, filtered_q, args, lists):
+        
+    aggs = {}    
 
     # query facets
     if facets:
@@ -162,24 +329,10 @@ def document_query(args, fields=DEFAULT_FIELDS, sources=None, lists=None,
                 }
             }
             aggs['attr_%s' % attr] = attr_facet
+    return aggs
 
-    q = {
-        'query': q,
-        'aggregations': aggs,
-        '_source': fields
-    }
 
-    if highlights:
-        q['highlight'] = {
-            'fields': { '_all': {}}}
 
-        # XXX for some reason, ES won't give us both highlights and
-        # aggregation data
-        q.pop('aggregations')
-        
-    # import json
-    # print json.dumps(q, indent=2)
-    return q
 
 
 def entity_query(selectors):
