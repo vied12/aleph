@@ -54,17 +54,34 @@ def transform_facets(aggregations):
         'attributes': attributes
     }
 
+def preprocess_data(data):
+    ordered_attribs = [
+	  ['Company Name', ['company_name', 'companyName', 'sedar_company_id', 'Company name', 'companyCode']],
+	  ['Industry Sector', ['industry', 'assignedSIC', 'sector_name']],
+	  ['Filing Type', ['filing_type', 'file_type', 'document_type']],
+	  ['Filing Date', ['date', 'filingDate', 'announcement_date']],	   
+	   ]    
+    for result in data['results']:
+        result['attribs_to_show'] = []
+        for human_name, db_names in ordered_attribs:
+            for attribute in result['attributes']:
+                if attribute['name'] in db_names:
+                    result['attribs_to_show'].append([human_name, attribute['value']])
+    return data
 
 @blueprint.route('/api/1/query')
 def query():
     etag_cache_keygen()
     query = document_query(request.args, lists=authz.authz_lists('read'),
-                           sources=authz.authz_sources('read'))
+                           sources=authz.authz_sources('read'),
+                           highlights=True)
     results = search_documents(query)
     pager = Pager(results,
                   results_converter=lambda ds: [add_urls(d) for d in ds])
     data = pager.to_dict()
+    #import ipdb; ipdb.set_trace()
     data['facets'] = transform_facets(results.result.get('aggregations', {}))
+    data = preprocess_data(data)
     return jsonify(data)
 
 

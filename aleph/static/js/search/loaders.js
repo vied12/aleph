@@ -4,7 +4,7 @@ var loadSearchContext = ['QueryContext', function(QueryContext) {
 }];
 
 
-var loadSearchResult = ['$http', '$q', '$route', 'Query', 'Session',
+var loadSearchResult = ['$http', '$q', '$route', 'Query', 'Session', '$sce',
   function($http, $q, $route, Query, Session) {
   var dfd = $q.defer();
   Session.get(function(session) {

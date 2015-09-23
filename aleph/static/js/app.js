@@ -1,11 +1,11 @@
-var aleph = angular.module('aleph', ['ngRoute', 'ngAnimate', 'angular-loading-bar', 'ui.bootstrap',
+var aleph = angular.module('aleph', ['ngRoute', 'ngAnimate', 'ngSanitize', 'angular-loading-bar', 'ui.bootstrap',
                                      'debounce', 'truncate', 'infinite-scroll']);
 
 aleph.config(['$routeProvider', '$locationProvider', 'cfpLoadingBarProvider',
     function($routeProvider, $locationProvider, cfpLoadingBarProvider) {
 
-  cfpLoadingBarProvider.includeSpinner = false;
-
+	cfpLoadingBarProvider.includeSpinner = false;
+	
   $routeProvider.when('/search', {
     templateUrl: 'search_table.html',
     controller: 'SearchTableCtrl',

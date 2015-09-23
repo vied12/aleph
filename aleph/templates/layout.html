@@ -15,15 +15,49 @@
     <link rel="shortcut icon" href="http://openoil.net/wp/wp-content/themes/organic_nonprofit/images/favicon.ico"
       type="image/x-icon" />
     <base href="{{url_for('ui')}}">
+    <script>
+/**
+* Function that tracks a click on an outbound link in Google Analytics.
+* This function takes a valid URL string as an argument, and uses that URL string
+* as the event label.
+*/
+var trackOutboundLink = function(url) {
+   console.log('tracking outbound clicks');
+   ga('send', 'event', 'outbound', 'click', url, {'hitCallback':
+     function () {
+     document.location = url;
+     }
+   });
+}
+</script>
   </head>
   <body ng-controller="AppCtrl">
+
+
+  <div class="clearfix openoil-top-nav">
+    <ul class="nav navbar-nav">
+
+      <li><a href="http://openoil.net/about-2/" target="_blank">About
+us</a> </li><li> <a href="http://repository.openoil.net/wiki/Main_Page" target="_blank">Contracts
+repository</a> </li><li> <a href="https://openoil-ug.github.io/tanzania/tanzania/en/" target="_blank">Open
+data tour – Tanzania</a> </li><li> <a href="http://openoil.net/contract-modeling/" target="_blank">Public
+interest financial modeling</a> </li><li> <a href="http://openoil.net/openoil-api/" target="_blank">open
+API of world's oil concessions</a> </li><li> <a href="http://openoil.net/corporate-networks/bp-corporate-network/" target="_blank">mapping
+Big Oil</a></li>
+
+    </ul>
+  </div>
+    
     <nav class="navbar navbar-default navbar-static-top" role="navigation">
+
+      
+      
       <div class="container-fluid">
         <form class="navbar-form navbar-left"
           role="search" ng-submit="submitSearch(form)">
           <div class="form-group">
             <div class="input-group navbar-searchbox">
-              <span class="input-group-addon brand-field">{{config.APP_TITLE}}</span>
+              <span class="input-group-addon brand-field"><a href="https://openoil.net"><img src="https://openoil.net/wp/wp-content/uploads/2013/11/OpenOil-logo-2.jpg" width="24px"></a> Search</span>
               <input type="text" class="search-query form-control" autofocus
                 ng-model="query.state.q" placeholder="Search people, companies and other entities"
                 typeahead="entity for entity in suggestEntities($viewValue)"
@@ -40,12 +74,13 @@
           </div>
         </form>
 
-        <div id="navbar" class="collapse navbar-collapse navbar-right">
+        <div id="navbar" class="collapse navbar-collapse navbar-right">	  
           <ul class="nav navbar-nav">
+	    <li></li>
             <li ng-show="!session.logged_in && session.logins.twitter" ng-cloak>
               {% raw %}
                 <a href='{{session.logins.twitter}}' target='_self'>
-                  <i class="fa fa-twitter"></i> Sign in
+                  Sign in
                 </a>
               {% endraw %}
             </li>
@@ -91,16 +126,17 @@
       <script src="{{ ASSET_URL }}"></script>
       {% endassets %}
 
-<script>
+<script src="https://code.angularjs.org/1.2.14/angular-sanitize.min.js"></script>
+      
+  <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-66546889-1', 'auto');
+  ga('create', 'UA-29349823-2', 'auto');
   ga('send', 'pageview');
 
-</script>
-      
+</script>      
   </body>
 </html>
