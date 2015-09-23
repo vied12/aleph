@@ -1,10 +1,13 @@
 
 aleph.controller('AppCtrl', ['$scope', '$rootScope', '$location', '$route', '$http', '$modal', '$q',
-                             'Flash', 'Session', 'Query', 'QueryContext',
+                             'Flash', 'Session', 'Query', 'QueryContext', '$sce',
   function($scope, $rootScope, $location, $route, $http, $modal, $q, Flash, Session, Query, QueryContext) {
   $scope.session = {logged_in: false};
   $scope.query = Query;
-  $scope.flash = Flash;
+      $scope.flash = Flash;
+
+      $scope.unsafehtml = "This is <b>unsafe</b> html";
+      
 
   QueryContext.get().then(function(context) {
     $scope.queryContext = context;

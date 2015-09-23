@@ -30,7 +30,7 @@ def index():
 
 @blueprint.route('/api/1/sources', methods=['POST', 'PUT'])
 def create():
-    authz.require(auths.is_admin())
+    authz.require(authz.is_admin())
     src = Source.create(request_data(), current_user)
     db.session.commit()
     return view(src.slug)

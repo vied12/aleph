@@ -9,18 +9,30 @@
          tooltip-placement="right" class="source">
         {{queryContext.sources[doc.collection].label || doc.collection}}
       </a>
-      <a ng-href="{{doc.url || doc.source_url}}" target="_self" class="title">
+      <a ng-href="{{doc.url || doc.source_url}}" ng-click="trackOutboundLink('{{doc.url || doc.source_url}}')" target="_self" class="title">
         {{doc.title | characters: 90 }}
       </a>
       <span class="archive">
         [<a ng-href="{{doc.archive_url}}" target="_self">cached</a>]
       </span>
-      <span class="summary">{{doc.summary}}</span>
+      <!--<span class="summary">{{doc.summary}}</span>-->
+      <br/><span class="extracts">
+		<span ng-bind-html-unsafe="unsafehtml"></span>
+
+	<span ng-repeat="(resultfield, values) in doc.highlight">
+	  <span ng-repeat="textbit in doc.highlight[resultfield]">
+	    <div ng-bind-html="textbit" class="resultsnippet"></div>
+	  </span>
+	</span>
+
       <table class="attribute-table">
-	<tr ng-repeat="attrib in doc.attributes">
-	  <td>{{attrib.name}}</td><td>{{attrib.value}}</td>
+	<tr ng-repeat="attrib in doc.attribs_to_show">
+	    <td>{{attrib[0]}}</td><td>{{attrib[1]}}</td>
 	</tr>
-	</table>
+      </table>
+
+      <span class="aleph-attribute-table"/>
+      <span class="abc" ng-bing-html="processAttributes(doc.attributes)"/>
     </div>
   </div>
 

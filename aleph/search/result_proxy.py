@@ -51,4 +51,5 @@ class ESResultProxy(object):
         for hit in self.result.get('hits', {}).get('hits', []):
             res = hit.get('_source')
             res['score'] = hit.get('_score')
+            res['highlight'] = hit.get('highlight', [])
             yield res
