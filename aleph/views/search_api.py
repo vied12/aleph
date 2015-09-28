@@ -1,5 +1,6 @@
 from flask import Blueprint, request, redirect
 from apikit import jsonify, Pager
+import re
 
 from aleph import authz
 from aleph.core import url_for, app
@@ -17,6 +18,18 @@ import uuid
 
 blueprint = Blueprint('search', __name__)
 
+def find_original_url(doc):
+    '''
+    Various hacks to figure out the original source url of
+    collections that were not properly curated to begin with
+    '''
+    if doc['collection'] == 'lse' and 'data.openoil.net' in doc.get('source_url', ''):
+        try:
+            docid = re.search('(\d+).html', doc['source_url']).group(1)
+            return 'http://www.londonstockexchange.com/exchange/news/market-news/market-news-detail/%s.html' % docid
+        except Exception:
+            pass
+    return doc.get('url', doc.get('source_url', ''))
 
 def add_urls(doc):
     doc['archive_url'] = url_for('data.package',
@@ -72,7 +85,9 @@ def preprocess_data(data):
                 if attribute['name'] in db_names:
                     result['attribs_to_show'].append([human_name, attribute['value']])
                     break
-        result['redirect_url'] = "https://search.openoil.net/api/1/exit?u=%s" % urllib.parse.quote(result.get('url', result.get('source_url', '')))
+        original_url = find_original_url(result)
+        result['redirect_url'] = "https://search.openoil.net/api/1/exit?u=%s" % urllib.parse.quote(original_url)
+
     return data
 
 @blueprint.route('/api/1/query')
