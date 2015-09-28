@@ -2,14 +2,14 @@
 
   <div infinite-scroll="loadMore()" infinite-scroll-disabled="!hasMore()"
     infinite-scroll-distance="3">
-    <div class="result animate toggle" ng-repeat="doc in result.results">
+    <div class="result animate toggle" ng-repeat="doc in result.results track by $index">
       <a ng-href="" target="_self"
          tooltip="Loaded on {{doc.updated_at.split('T')[0]}}"
          tooltip-append-to-body="true"
          tooltip-placement="right" class="source">
         {{queryContext.sources[doc.collection].label || doc.collection}}
       </a>
-      <a ng-href="{{doc.url || doc.source_url}}" ng-click="trackOutboundLink('{{doc.url || doc.source_url}}')" target="_self" class="title">
+      <a ng-href="{{doc.redirect_url}}" class="title">
         {{doc.title | characters: 90 }}
       </a>
       <span class="archive">
@@ -19,14 +19,14 @@
       <br/><span class="extracts">
 		<span ng-bind-html-unsafe="unsafehtml"></span>
 
-	<span ng-repeat="(resultfield, values) in doc.highlight">
-	  <span ng-repeat="textbit in doc.highlight[resultfield]">
+	<span ng-repeat="(resultfield, values) in doc.highlight track by $index">
+	  <span ng-repeat="textbit in doc.highlight[resultfield] track by $index">
 	    <div ng-bind-html="textbit" class="resultsnippet"></div>
 	  </span>
 	</span>
 
       <table class="attribute-table">
-	<tr ng-repeat="attrib in doc.attribs_to_show">
+	<tr ng-repeat="attrib in doc.attribs_to_show track by $index">
 	    <td>{{attrib[0]}}</td><td>{{attrib[1]}}</td>
 	</tr>
       </table>

@@ -1,15 +1,19 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, redirect
 from apikit import jsonify, Pager
 
 from aleph import authz
-from aleph.core import url_for
+from aleph.core import url_for, app
 from aleph.model import Entity
 from aleph.views.cache import etag_cache_keygen
 from aleph.search.queries import document_query, get_list_facets
 from aleph.search.attributes import available_attributes
 from aleph.search import search_documents
 
+from six.moves import urllib
+import google_measurement_protocol
+
 import logging
+import uuid
 
 blueprint = Blueprint('search', __name__)
 
@@ -56,10 +60,10 @@ def transform_facets(aggregations):
 
 def preprocess_data(data):
     ordered_attribs = [
-	  ['Company Name', ['company_name', 'companyName', 'sedar_company_id', 'Company name', 'companyCode']],
-	  ['Industry Sector', ['industry', 'assignedSIC', 'sector_name']],
-	  ['Filing Type', ['filing_type', 'file_type', 'document_type']],
-	  ['Filing Date', ['date', 'filingDate', 'announcement_date']],	   
+	  ['Company Name', ['Company Name', 'company_name', 'companyName', 'sedar_company_id', 'Company name', 'companyCode']],
+	  ['Industry Sector', ['Industry Sector', 'industry', 'assignedSIC', 'sector_name']],
+	  ['Filing Type', ['Filing Type', 'filing_type', 'file_type', 'document_type']],
+	  ['Filing Date', ['Filing Date', 'date', 'filingDate', 'announcement_date']],	   
 	   ]    
     for result in data['results']:
         result['attribs_to_show'] = []
@@ -67,6 +71,8 @@ def preprocess_data(data):
             for attribute in result['attributes']:
                 if attribute['name'] in db_names:
                     result['attribs_to_show'].append([human_name, attribute['value']])
+                    break
+        result['redirect_url'] = "https://search.openoil.net/api/1/exit?u=%s" % urllib.parse.quote(result.get('url', result.get('source_url', '')))
     return data
 
 @blueprint.route('/api/1/query')
@@ -92,3 +98,16 @@ def attributes():
         sources=authz.authz_sources('read'), # noqa
         lists=authz.authz_lists('read')) # noqa
     return jsonify(attributes)
+
+@blueprint.route('/api/1/exit')
+def exit_redirect():
+    rawurl = request.args.get('u', 'https://search.openoil.net')
+    newurl = urllib.parse.unquote(rawurl)
+    # XXX tracking happens here, right?
+    user_id = request.cookies.get('oo_search_user', 'unknown user')
+    ua = app.config.get('GOOGLE_ANALYTICS_UA')
+    view = google_measurement_protocol.PageView(
+        path=request.url, referrer = request.referrer)
+    google_measurement_protocol.report(
+        ua, user_id, view)
+    return redirect(newurl)
