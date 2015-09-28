@@ -1,5 +1,6 @@
 import os
-from flask import render_template
+import uuid
+from flask import render_template, request, make_response
 
 from aleph import authz
 from aleph.core import app
@@ -17,7 +18,21 @@ def angular_templates():
 
 @app.route('/')
 def ui(**kwargs):
-    return render_template("layout.html", templates=angular_templates())
+    # cookie
+    is_new_user = 'oo_search_user' not in request.cookies
+    user_id = request.cookies.get('oo_search_user', str(uuid.uuid4()))
+    rsp =  make_response(
+        render_template("layout.html",
+                        templates=angular_templates(),
+                        is_new_user = is_new_user,
+                        user_id = user_id   
+                                     ))
+    if is_new_user:
+        rsp.set_cookie('oo_search_user',
+                            value=user_id,
+                            max_age=60 * 60 * 24 * 365, # 1 year
+                            )
+    return rsp
 
 
 @app.route('/sources/<path:slug>')

@@ -22,6 +22,7 @@ unicodecsv
 networkx
 XlsxWriter>=0.6.6
 SQLAlchemy-Utils>=0.29.8
+google-measurement-protocol
 https://github.com/pudo/archivekit/tarball/master
 https://github.com/pudo/loadkit/tarball/master
 gunicorn
