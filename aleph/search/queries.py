@@ -73,9 +73,6 @@ def document_query(args, fields=DEFAULT_FIELDS, sources=None, lists=None,
     if highlights:
         q['highlight'] = _make_highlights(fields)
 
-    import json
-    print json.dumps(q, indent=2)
-    print json.dumps(q)
     return q
 
 def _build_regex_query(args, fields=QUERY_FIELDS):
@@ -232,6 +229,7 @@ def _add_attribute_filter(filtered_q, args):
                 "path": "attributes",
                 "query": {
                     "bool": {
+                        
                         "must": [
                             {"term": {"attributes.name": attr}},
                             {"term": {"attributes.value": value}}

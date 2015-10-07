@@ -1,18 +1,34 @@
 
 aleph.controller('AppCtrl', ['$scope', '$rootScope', '$location', '$route', '$http', '$modal', '$q',
-                             'Flash', 'Session', 'Query', 'QueryContext', '$sce',
-  function($scope, $rootScope, $location, $route, $http, $modal, $q, Flash, Session, Query, QueryContext) {
+                             'Flash', 'Session', 'Query', 'QueryContext', 'ModalService', '$sce',
+function($scope, $rootScope, $location, $route, $http, $modal, $q, Flash, Session, Query, QueryContext, ModalService) {
   $scope.session = {logged_in: false};
   $scope.query = Query;
       $scope.flash = Flash;
 
-      $scope.unsafehtml = "This is <b>unsafe</b> html";
-      
+    $scope.show_help = function() {
+        ModalService.showModal({
+            templateUrl: '/static/templates/help.html',
+            controller: "ModalController"
+        }).then(function(modal) {
+            modal.element.show();
+            modal.close.then(function(result) {
+                $scope.message = "You said " + result;
+            });
+        });
+    };
+
+    window.scp = $scope;
+
+				 
 
   QueryContext.get().then(function(context) {
     $scope.queryContext = context;
   });
+				 
 
+				 
+				 
   Session.get(function(session) {
     $scope.session = session;
   });
@@ -94,3 +110,12 @@ aleph.controller('ProfileCtrl', ['$scope', '$location', '$modalInstance', '$http
     });
   };
 }]);
+
+
+aleph.controller('ModalController', function($scope, close) {
+    console.log('opening a modal');
+ $scope.close = function(result) {
+ 	close(result, 500); // close, but give 500ms for bootstrap to animate
+ };
+
+});
