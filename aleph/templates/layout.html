@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="http://openoil.net/wp/wp-content/themes/organic_nonprofit/images/favicon.ico"
       type="image/x-icon" />
     <base href="{{url_for('ui')}}">
-    
+
   <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -120,7 +120,9 @@ Big Oil</a></li>
     {% assets "deps" %}
       <script src="{{ ASSET_URL }}"></script>
     {% endassets %}
+    <script src="http://search.openoil.net/static/vendor/angular-modal-service/dst/angular-modal-service.js"></script>
 
+      
     {% assets "app" %}
       <script src="{{ ASSET_URL }}"></script>
       {% endassets %}

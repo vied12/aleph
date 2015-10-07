@@ -117,7 +117,8 @@
         <li class="list-group-item facet animate toggle"
           ng-repeat="facet in result.facets.sources"
           ng-class="{'active': query.hasFilter('source', facet.key)}"
-          ng-click="query.toggleFilter('source', facet.key)">
+            ng-click="query.toggleFilter('source', facet.key)"
+	    >
           <span class="badge">{{facet.doc_count}}</span>
           <span class="lbl">
             {{sources[facet.key].label | characters: 80 }}
