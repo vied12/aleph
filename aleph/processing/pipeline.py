@@ -22,7 +22,9 @@ CONFIG = {
         },
         'index': {
             'operator': 'aleph_indexer',
-            'requires': ['entities', 'plain_text', 'normalized_text']
+            'requires': [
+                #'entities',
+                'plain_text', 'normalized_text']
         }
     }
 }

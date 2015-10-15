@@ -27,6 +27,7 @@
     "d3": "~3.5.3",
     "ng-debounce": "~0.1.5",
     "angular-loading-bar": "~0.7.1",
-    "angular-modal-service": "~0.6.9"
+      "angular-modal-service": "~0.6.9",
+      "angular-tooltips": "^0"
   }
 }

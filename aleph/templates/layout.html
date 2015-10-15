@@ -9,7 +9,10 @@
 
     {% assets "css" %}
       <link type="text/css" href="{{ ASSET_URL }}" rel="stylesheet">
-    {% endassets %}
+      {% endassets %}
+
+<link rel="stylesheet" href="/static/vendor/angular-tooltips/dist/angular-tooltips.min.css"
+      
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
     <link rel="shortcut icon" href="http://openoil.net/wp/wp-content/themes/organic_nonprofit/images/favicon.ico"
@@ -127,7 +130,8 @@ Big Oil</a></li>
       <script src="{{ ASSET_URL }}"></script>
       {% endassets %}
 
-<script src="https://code.angularjs.org/1.2.14/angular-sanitize.min.js"></script>
+      <script src="https://code.angularjs.org/1.2.14/angular-sanitize.min.js"></script>
+      <script src="/static/vendor/angular-tooltips/dist/angular-tooltips.min.js"></script>
       
   </body>
 </html>

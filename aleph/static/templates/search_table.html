@@ -4,7 +4,7 @@
     infinite-scroll-distance="3">
     <div class="result animate toggle" ng-repeat="doc in result.results track by $index">
       <a ng-href="" target="_self"
-         tooltip="Loaded on {{doc.updated_at.split('T')[0]}}"
+         tooltip="{{sourceLabel(doc.collection)}}"
          tooltip-append-to-body="true"
          tooltip-placement="right" class="source">
         {{queryContext.sources[doc.collection].label || doc.collection}}
@@ -18,15 +18,23 @@
       <!--<span class="summary">{{doc.summary}}</span>-->
       <br/><span class="extracts">
 		<span ng-bind-html-unsafe="unsafehtml"></span>
+	<table class="attribute-table">
+	  <tr>
+	<td ng-repeat="attrib in doc.top_attribs track by $index">
+	    <b>{{attrib[0]}}</b>: {{attrib[1]}}
+	</td></tr>
+      </table><br/>
 
+		
 	<span ng-repeat="(resultfield, values) in doc.highlight track by $index">
 	  <span ng-repeat="textbit in doc.highlight[resultfield] track by $index">
-	    <div ng-bind-html="textbit" class="resultsnippet"></div>
+	    <div ng-bind-html="textbit" class="resultsnippet"></div><br/>
 	  </span>
 	</span>
 
-      <table class="attribute-table">
-	<tr ng-repeat="attrib in doc.attribs_to_show track by $index">
+
+	<table class="attribute-table">
+	<tr ng-repeat="attrib in doc.bottom_attribs track by $index | limitTo:2 ">
 	    <td>{{attrib[0]}}</td><td>{{attrib[1]}}</td>
 	</tr>
       </table>

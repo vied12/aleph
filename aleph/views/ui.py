@@ -22,6 +22,7 @@ def angular_templates():
 @app.route('/search/export')
 @app.route('/search/graph')
 @app.route('/graph')
+@app.route('/help')
 @app.route('/login')
 @app.route('/')
 def ui(**kwargs):
