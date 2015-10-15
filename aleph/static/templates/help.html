@@ -1,0 +1,37 @@
+<div search-frame result="result">
+  <h2>OpenOil Search</h2>
+
+  <p>This page lets you search OpenOil's collection of more than 1 million corporate filings related to the oil, gas and mining industries.</p>
+
+  <p>We have indexed the full text of contracts, company disclosures, news articles and government reports, allowing you to simultaneously check documents from disparate sources.</p>
+
+  <p>Much of this text was previously locked up inside image-only PDFs and other inaccessible formats. By using Optical Character Recognition, we have enabled searches across these files for the first time.</p>
+
+  <h3>Getting Started</h3>
+
+  Type your search term in the box at the top. To start exploring, you could:
+  <ul>
+    <li>Look up a project, such as <a href="http://search.openoil.net/search?q=bulyanhulu">Tanzania's Bulyanhulu gold mine</a></li>
+    <li>Find auditors' <a href="http://search.openoil.net/search?q=%22doubt%20going%20concern%22~10">expressions of concern</a></li>
+    <li>Compare <a href="http://search.openoil.net/search?q=%22reserve%20statement%22">statements of reserves</a></li>
+  </ul>
+
+  See our <a href="http://openoil.net/2015/10/08/what-happens-when-you-can-search-30-million-words-of-oil-contracts/">blog post</a> on six interesting ways to search.
+
+<h3>Search Syntax</h3>
+
+Advanced search queries are possible, based on <a href="http://search.openoil.net/search?q=%22annual%20statement%20of%20reserves%22">ElasticSearch query string syntax</a>. For example:
+
+<ul>
+  <li>~10 = Proximity: put sign at the end of a quote to define the number of words in a string, that need to contain all words of the quote
+</li><li>.* = search for any other character following
+</li><li>? = wildcard search, using ? to replace a single character
+</li><li>~ = fuzziness search, i.e. quikc~
+  </li><li>many more, see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#query-string-syntax">full documentation</a>
+  </li>
+  </ul>
+
+
+
+</div>
+

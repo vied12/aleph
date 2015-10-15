@@ -262,7 +262,8 @@ def _make_highlights(fields):
     # XXX this should also include other fields
     highlights = {'fields': {}}
     for field in fields:
-        highlights['fields'][field] = {}
+        highlights['fields'][field] = {
+            "number_of_fragments": 99}
     return highlights
 
 def _make_aggregations(facets, filtered_q, args, lists):

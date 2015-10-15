@@ -1,5 +1,7 @@
 var aleph = angular.module('aleph', ['ngRoute', 'ngAnimate', 'ngSanitize', 'angular-loading-bar', 'ui.bootstrap',
-                                     'debounce', 'truncate', 'infinite-scroll', 'angularModalService']);
+                                     'debounce', 'truncate', 'infinite-scroll', 'angularModalService',
+				     '720kb.tooltips'
+				    ]);
 
 aleph.config(['$routeProvider', '$locationProvider', 'cfpLoadingBarProvider',
     function($routeProvider, $locationProvider, cfpLoadingBarProvider) {
@@ -44,6 +46,13 @@ aleph.config(['$routeProvider', '$locationProvider', 'cfpLoadingBarProvider',
     loginRequired: true
   });
 
+  $routeProvider.when('/help', {
+    templateUrl: 'help.html',
+    controller: 'SourcesIndexCtrl',
+    loginRequired: false
+  });
+
+	
   $routeProvider.when('/sources/new', {
     templateUrl: 'sources_new.html',
     controller: 'SourcesNewCtrl',
@@ -84,7 +93,7 @@ aleph.config(['$routeProvider', '$locationProvider', 'cfpLoadingBarProvider',
   });
 
   $routeProvider.otherwise({
-    redirectTo: '/search',
+    redirectTo: '/help',
     loginRequired: false
   });
 

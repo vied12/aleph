@@ -16,6 +16,7 @@ def angular_templates():
                 yield (file_name, fh.read().decode('utf-8'))
 
 
+
 @app.route('/')
 def ui(**kwargs):
     # cookie

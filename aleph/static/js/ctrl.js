@@ -6,25 +6,27 @@ function($scope, $rootScope, $location, $route, $http, $modal, $q, Flash, Sessio
   $scope.query = Query;
       $scope.flash = Flash;
 
-    $scope.show_help = function() {
-        ModalService.showModal({
-            templateUrl: '/static/templates/help.html',
-            controller: "ModalController"
-        }).then(function(modal) {
-            modal.element.show();
-            modal.close.then(function(result) {
-                $scope.message = "You said " + result;
-            });
-        });
-    };
-
     window.scp = $scope;
 
-				 
+    source_labels = {
+	'sec-edgar': 'US stock exchange filings',
+	'edgar-partial-content': 'US stock exchange filings',
+	'rigzone': 'Industry news',
+	'lse': 'London stock exchange',
+	'johannesburg-exchange': 'Johannesburg stock exchange',
+	'asx': 'Australian stock exchange',
+	'sedar-partial-content': 'Canadian corporate filings',
+	'singapore-exchange': 'Singapore stock exchange',
+	'openoil-contracts': 'OpenOil contract collection',
+    }
 
-  QueryContext.get().then(function(context) {
-    $scope.queryContext = context;
-  });
+
+
+    $scope.sourceLabel = function(key){
+	if(key in source_labels){
+	    return source_labels[key]}
+	return key;
+    }
 				 
 
 				 

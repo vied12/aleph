@@ -84,9 +84,11 @@ def preprocess_data(data):
             for attribute in result['attributes']:
                 if attribute['name'] in db_names:
                     result['attribs_to_show'].append([human_name, attribute['value']])
+                    result['top_attribs'], result['bottom_attribs'] = result['attribs_to_show'][:2], result['attribs_to_show'][2:]
                     break
-        original_url = find_original_url(result)
-        result['redirect_url'] = "https://search.openoil.net/api/1/exit?u=%s" % urllib.parse.quote(original_url)
+        original_url = find_original_url(result) or ''
+        print(original_url)
+        result['redirect_url'] = "https://search.openoil.net/api/1/exit?u=%s" % urllib.parse.quote(original_url.encode('utf8'))
 
     return data
 
