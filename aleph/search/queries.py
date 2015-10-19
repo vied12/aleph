@@ -280,7 +280,8 @@ def _make_aggregations(facets, filtered_q, args, lists):
                         'filter': {'query': filtered_q},
                         'aggs': {
                             'collections': {
-                                'terms': {'field': 'collection'}
+                                'terms': {'field': 'collection',
+                                          'size': 1000,}
                             }
                         }
                     }
