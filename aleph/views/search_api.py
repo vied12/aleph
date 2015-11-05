@@ -18,6 +18,29 @@ import uuid
 
 blueprint = Blueprint('search', __name__)
 
+import re
+import sys
+
+def edgar_link(_fn):
+    #fn = '111270610-K_2010-09-28_0001062993-10-003164.txt_extracted_4.txt'
+    groups = _fn.strip('"').split('/')
+    cik = groups[-1]
+    #cik, rest = re.match('(\d+)(.*)', c).groups()
+    exhibit_num = re.search('(\d+).txt$', groups[-1]).group(1)
+    filenum = re.search('_([\d\-]+).txt_extracted_', groups[-1]).group(1)
+    filenum_short = ''.join(filenum.split('-'))
+    url = 'http://www.sec.gov/Archives/edgar/data/%s/%s/%s-index.htm' % (cik, filenum_short, filenum)
+    human_exhibit_num = str(int(exhibit_num) + 1) # don't make users count from 0
+    return _fn.strip(), url, human_exhibit_num
+
+def edgar_from_filepath(_fn):
+    return goback(_fn)
+
+if __name__ == '__main__':
+    for line in sys.stdin:
+        print(','.join(goback(line)))
+
+
 def find_original_url(doc):
     '''
     Various hacks to figure out the original source url of
@@ -27,6 +50,11 @@ def find_original_url(doc):
         try:
             docid = re.search('(\d+).html', doc['source_url']).group(1)
             return 'http://www.londonstockexchange.com/exchange/news/market-news/market-news-detail/%s.html' % docid
+        except Exception:
+            pass
+    if doc['collection'] == 'edgar-partial-content':
+        try:
+            pass
         except Exception:
             pass
     return doc.get('url', doc.get('source_url', ''))
