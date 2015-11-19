@@ -6839,6 +6839,9 @@ a {
 .result .title {
   font-weight: bold;
 }
+#filter_dropdown {
+  visibility: hidden;
+}
 .nav.nav-tabs,
 .search-bar {
   margin-bottom: 1em;
