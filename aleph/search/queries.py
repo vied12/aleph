@@ -49,10 +49,12 @@ def document_query(args, fields=DEFAULT_FIELDS, sources=None, lists=None,
         filtered_q = _add_attribute_filter(filtered_q, args)
         filtered_q = _add_collections_filter(filtered_q, args, sources)
         aggs = _make_aggregations(facets, filtered_q, args, lists)
+        weighted_q = _wrap_weighting(filtered_q)
         q = {
-        'query': filtered_q,
-        'aggregations': aggs,
-        '_source': fields
+            #'query': filtered_q,
+            'query': weighted_q,
+            'aggregations': aggs,
+            '_source': fields
         }
 
     else:
@@ -63,9 +65,9 @@ def document_query(args, fields=DEFAULT_FIELDS, sources=None, lists=None,
         filtered_q = _add_collections_filter(filtered_q, args, sources)
         aggs = _make_aggregations(facets, filtered_q, args, lists)
         q = {
-        'query': filtered_q,
-        'aggregations': aggs,
-        '_source': fields
+            'query': filtered_q,
+            'aggregations': aggs,
+            '_source': fields
         }
 
         
@@ -74,6 +76,32 @@ def document_query(args, fields=DEFAULT_FIELDS, sources=None, lists=None,
         q['highlight'] = _make_highlights(fields)
 
     return q
+
+def _wrap_weighting(q):
+    '''
+    We want to weight documents higher based on date
+    To do this, we use ES's 'funtion_score' feature
+    as described at https://www.elastic.co/guide/en/elasticsearch/guide/current/boosting-by-popularity.html
+    '''
+    wrapped_q = {
+        'function_score': {
+            'query': q,
+               'functions': [
+
+                   # give extra weight to documents from our contracts collection
+                   {'filter': {'term': {'collection': 'openoil-contracts'}},
+                    'weight': 2},
+
+                   # give extra weight to more recent documents
+                   {'exp': {
+                       'updated_at': {'scale': '10w'}
+                   }},
+
+                ],
+        }
+        }
+    return wrapped_q
+
 
 def _build_regex_query(args, fields=QUERY_FIELDS):
     qstr = args.get('q', '').strip()
