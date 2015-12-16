@@ -22,6 +22,12 @@ import re
 import sys
 
 def edgar_link(_fn):
+    '''
+    XXX: unused -- should be (re)moved
+    Our elasticsearch store contains urls to our cached copies for SEC
+    filings (EDGAR). But we want to display links to the original source.
+    So here we reconstruct the original URLs
+    '''
     #fn = '111270610-K_2010-09-28_0001062993-10-003164.txt_extracted_4.txt'
     groups = _fn.strip('"').split('/')
     cik = groups[-1]
@@ -32,13 +38,6 @@ def edgar_link(_fn):
     url = 'http://www.sec.gov/Archives/edgar/data/%s/%s/%s-index.htm' % (cik, filenum_short, filenum)
     human_exhibit_num = str(int(exhibit_num) + 1) # don't make users count from 0
     return _fn.strip(), url, human_exhibit_num
-
-def edgar_from_filepath(_fn):
-    return goback(_fn)
-
-if __name__ == '__main__':
-    for line in sys.stdin:
-        print(','.join(goback(line)))
 
 
 def find_original_url(doc):
@@ -122,6 +121,9 @@ def preprocess_data(data):
 
 @blueprint.route('/api/1/query')
 def query():
+    '''
+    Main entry point for search API requests
+    '''
     etag_cache_keygen()
     query = document_query(request.args, lists=authz.authz_lists('read'),
                            sources=authz.authz_sources('read'),
@@ -138,6 +140,10 @@ def query():
 
 @blueprint.route('/api/1/query/attributes')
 def attributes():
+    '''
+    List the metadata available for query results
+    (for purposes of filtering, grouping etc)
+    '''
     etag_cache_keygen()
     attributes = available_attributes(request.args,
         sources=authz.authz_sources('read'), # noqa
@@ -146,6 +152,10 @@ def attributes():
 
 @blueprint.route('/api/1/exit')
 def exit_redirect():
+    '''
+    Track clicks on external links, mainly for the benefit
+    of google analytics
+    '''
     rawurl = request.args.get('u', 'https://search.openoil.net')
     newurl = urllib.parse.unquote(rawurl)
     # XXX tracking happens here, right?
