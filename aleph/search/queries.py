@@ -169,39 +169,6 @@ def _partial_regex(querypart):
 
 
 
-def _build_advanced_query(args):
-    qstr = args.get('q', '').strip()
-    if len(qstr):
-        regex_pattern = 'regex:\S+'
-        regexes = [_partial_regex(x) for x in re.findall(regex_pattern, qstr)]
-        qstr = re.subn(regex_pattern, '', qstr)[0]
-        filtered_q = {
-            "bool": {
-                "must": [{
-                    "multi_match": {
-                        "query": qstr,
-                        "fields": QUERY_FIELDS,
-                        "type": "best_fields",
-                        "cutoff_frequency": 0.0007,
-                        "operator": "and",
-                    },
-                }],
-                "should": [
-                    {
-                    "multi_match": {
-                        "query": qstr,
-                        "fields": QUERY_FIELDS,
-                        "type": "phrase"
-                    },
-                },
-                               
-                           ]
-            }
-        }
-        filtered_q['bool']['must'].append(regexes)
-    else:
-        filtered_q = {'match_all': {}}
-    return filtered_q
 
 def _build_qstr_query(args):
     qstr = args.get('q', '').strip()
@@ -228,34 +195,6 @@ def _build_qstr_query(args):
                 #},
                 #               
                 #           ]
-            }
-        }
-    else:
-        filtered_q = {'match_all': {}}
-    return filtered_q
-
-
-def _build_basic_query(args):
-    qstr = args.get('q', '').strip()
-    if len(qstr):
-        filtered_q = {
-            "bool": {
-                "must": {
-                    "multi_match": {
-                        "query": qstr,
-                        "fields": QUERY_FIELDS,
-                        "type": "best_fields",
-                        "cutoff_frequency": 0.0007,
-                        "operator": "and",
-                    },
-                },
-                "should": {
-                    "multi_match": {
-                        "query": qstr,
-                        "fields": QUERY_FIELDS,
-                        "type": "phrase"
-                    },
-                }
             }
         }
     else:
