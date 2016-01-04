@@ -67,6 +67,13 @@ API of world's oil concessions</a> </li><li> <a href="http://openoil.net/corpora
                 typeahead-template-url="entity_link.html"
                 typeahead-on-select="acceptSuggestion($item)">
 
+	      Sort by: <select name="sort" ng-model="query.state.sort"
+		      ng-change="submitSearch(form)">
+		<option value="best" selected="selected">Best matches</option>
+		<option value="date">Date</option>
+		<option value="relevance">Relevance</option>
+	      </select>
+
               <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="clearSearch()">
                   <i class="fa fa-refresh"></i> Reset</button>
