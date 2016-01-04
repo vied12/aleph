@@ -2,8 +2,6 @@ from colander import Invalid
 from flask import request
 from apikit import jsonify
 
-import logging
-
 from aleph.core import app, login_manager
 from aleph.views.ui import ui # noqa
 from aleph.assets import assets # noqa
@@ -41,7 +39,6 @@ def load_user_from_request(request):
 
 @app.before_request
 def before():
-    logging.debug('handling %s' % request.url)
     request.authz_sources = {}
     request.authz_lists = {}
 
