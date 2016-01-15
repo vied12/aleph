@@ -8,12 +8,12 @@ from aleph.views import app, assets
 from aleph.processing import make_pipeline, process_collection
 from aleph.crawlers import crawl_source
 from aleph.upgrade import upgrade as upgrade_, reset as reset_
-from aleph.contrib.openoil import scheduled_updates
+from aleph.contrib.openoil import controls
 
 manager = Manager(app)
 manager.add_command('assets', ManageAssets(assets))
 manager.add_command('db', MigrateCommand)
-
+manager.add_command('openoil', controls.manager)
 
 @manager.command
 def crawl(source, force=False):
@@ -53,9 +53,6 @@ def upgrade():
     """ Create or upgrade the search index and database. """
     upgrade_()
 
-@manager.command
-def schedule():
-    scheduled_updates.schedule_updates()
 
 def main():
     manager.run()
