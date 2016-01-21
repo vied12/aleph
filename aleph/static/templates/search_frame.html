@@ -126,7 +126,7 @@
           ng-repeat="facet in result.facets.sources"
           ng-class="{'active': query.hasFilter('source', facet.key)}"
             ng-click="query.toggleFilter('source', facet.key)"
-	    ng-if="sources[facet.key].label != 'Canadian Corporate Filings'"
+	    ng-if="sources[facet.key].label != 'Canadian Corporate Filings' || session.is_admin"
 	    tooltip="{{sourceLabel(facet.key)}}"
 	    tooltip-append-to-body="true"
 	    tooltip-placement="left"
