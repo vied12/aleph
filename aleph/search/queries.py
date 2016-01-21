@@ -82,7 +82,7 @@ def apply_sorting(q, args, aggs, fields):
             '_source': fields
         }
         q['sort'] = [
-            { "updated_at": {"order": "desc"}},
+            { "filed_at": {"order": "desc"}},
             ]
     elif args.get('sort', None) == 'relevance':
         q = {

@@ -14,8 +14,14 @@ from aleph import default_settings
 
 
 app = Flask(__name__)
+settingsfile = app.config.get('configfile', None)
+print('Wake Up')
 app.config.from_object(default_settings)
-app.config.from_envvar('ALEPH_SETTINGS', silent=True)
+if settingsfile:
+    print('SET SET SET')
+    app.config.from_pyfile(settingsfile)
+else:
+    app.config.from_envvar('ALEPH_SETTINGS', silent=True)
 
 app_name = app.config.get('APP_NAME')
 

@@ -15,19 +15,14 @@ log.setLevel(logging.DEBUG)
 
 def init_search():
     log.info("Creating ElasticSearch index and uploading mapping...")
-    try:
-        es.create_index(es_index)
-    except IndexAlreadyExistsError:
-        pass
-    es.put_mapping(es_index, DOC_TYPE, {DOC_TYPE: DOC_MAPPING})
-
+    assert es_index == 'aleph_dev'
+    es.indices.create(index=es_index, ignore=[400,404])
+    es.indices.put_mapping(index=es_index, doc_type=DOC_TYPE, body={DOC_TYPE: DOC_MAPPING})
 
 def delete_index():
-    try:
-        es.delete_index(es_index)
-    except ElasticHttpNotFoundError:
-        pass
-
+    assert es_index == 'aleph_dev'
+    es.indices.delete(index=es_index, ignore=[400,404])
+    
 
 def search_documents(query):
     return ESResultProxy(DOC_TYPE, query)

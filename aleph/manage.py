@@ -15,6 +15,8 @@ manager.add_command('assets', ManageAssets(assets))
 manager.add_command('db', MigrateCommand)
 manager.add_command('openoil', controls.manager)
 
+manager.add_option('-c', '--config', dest='configfile', required=False)
+
 @manager.command
 def crawl(source, force=False):
     """ Execute the crawler for a given source specification. """
