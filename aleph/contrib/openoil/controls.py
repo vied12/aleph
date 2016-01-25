@@ -91,18 +91,23 @@ def rebuild_test_index():
     assert aleph.core.es_index == 'aleph_dev'
     aleph.search.delete_index()
     aleph.search.init_search()
-    for i, result in enumerate(random_docs()):
-        new = es.index(
-            index='aleph_dev',
-            doc_type = result['_type'],
-            body = result['_source'],
+    docswanted=10000
+    perpage = 500
+    for offset in range(0,docswanted,perpage):
+        for i, result in enumerate(random_docs(howmany=perpage,offset=offset)):
+            new = es.index(
+                index='aleph_dev',
+                doc_type = result['_type'],
+                body = result['_source'],
             )
-        assert new['created'] == True
+            assert new['created'] == True
     print('created %s docs' % i)
     
-def random_docs():
+def random_docs(howmany=100, offset=0):
     index = 'aleph'
     query = {
+        "from": offset,
+        "size": howmany,
         "query": {
             "function_score": {
                 "functions": [{
