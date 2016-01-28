@@ -25,7 +25,7 @@ def find_original_url(doc):
 
 def preprocess_data(data):
     ordered_attribs = [
-	  ['Company Name', ['Company Name', 'company_name', 'companyName', 'sedar_company_id', 'Company name', 'companyCode']],
+	  ['Company Name', ['Company Name', 'company_name', 'companyName', 'sedar_company_id', 'Company name', 'companyCode', 'company']],
 	  ['Industry Sector', ['Industry Sector', 'industry', 'assignedSIC', 'sector_name']],
 	  ['Filing Type', ['Filing Type', 'filing_type', 'file_type', 'document_type']],
 	  ['Filing Date', ['Filing Date', 'date', 'filingDate', 'announcement_date']],	   
