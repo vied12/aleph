@@ -27,3 +27,4 @@ google-measurement-protocol
 https://github.com/pudo/archivekit/tarball/master
 https://github.com/pudo/loadkit/tarball/master
 gunicorn
+testing.elasticsearch
