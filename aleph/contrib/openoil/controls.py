@@ -107,6 +107,7 @@ def console():
              }
     res = es.search(body=query,index='aleph_dev')
     import ipdb; ipdb.set_trace()
+
     
 @manager.command
 def add_date_mapping():
