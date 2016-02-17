@@ -1,6 +1,7 @@
 
 DOC_TYPE = 'document'
 
+
 DOC_MAPPING = {
     "_id": {
         "path": "id"
@@ -23,6 +24,12 @@ DOC_MAPPING = {
         "normalized": {"type": "string", "index": "analyzed"},
         "created_at": {"type": "date", "index": "not_analyzed"},
         "updated_at": {"type": "date", "index": "not_analyzed"},
+        "filed_at": {
+                        "type": "date",
+                        "format": "basic_date", #YYYYMMdd
+                    },
+
+        
         "entities": {
             "_id": {
                 "path": "id"
@@ -51,3 +58,4 @@ DOC_MAPPING = {
         }
     }
 }
+

@@ -1,10 +1,10 @@
 
 aleph.controller('AppCtrl', ['$scope', '$rootScope', '$location', '$route', '$http', '$modal', '$q',
-                             'Flash', 'Session', 'Query', 'QueryContext', 'ModalService', '$sce',
-function($scope, $rootScope, $location, $route, $http, $modal, $q, Flash, Session, Query, QueryContext, ModalService) {
+                             'Flash', 'Session', 'Query', 'QueryContext', '$sce',
+function($scope, $rootScope, $location, $route, $http, $modal, $q, Flash, Session, Query, QueryContext) {
   $scope.session = {logged_in: false};
   $scope.query = Query;
-      $scope.flash = Flash;
+  $scope.flash = Flash;
 
     window.scp = $scope;
 
@@ -110,14 +110,5 @@ aleph.controller('ProfileCtrl', ['$scope', '$location', '$modalInstance', '$http
       $scope.session.user = data;
       $modalInstance.dismiss('ok');
     });
-  };  
+  };
 }]);
-
-
-aleph.controller('ModalController', function($scope, close) {
-    console.log('opening a modal');
- $scope.close = function(result) {
- 	close(result, 500); // close, but give 500ms for bootstrap to animate
- };
-
-});

@@ -8,12 +8,14 @@ from aleph.views import app, assets
 from aleph.processing import make_pipeline, process_collection
 from aleph.crawlers import crawl_source
 from aleph.upgrade import upgrade as upgrade_, reset as reset_
-
+from aleph.contrib.openoil import controls
 
 manager = Manager(app)
 manager.add_command('assets', ManageAssets(assets))
 manager.add_command('db', MigrateCommand)
+manager.add_command('openoil', controls.manager)
 
+manager.add_option('-c', '--config', dest='configfile', required=False)
 
 @manager.command
 def crawl(source, force=False):

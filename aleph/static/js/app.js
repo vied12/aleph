@@ -39,7 +39,7 @@ aleph.config(['$routeProvider', '$locationProvider', 'cfpLoadingBarProvider',
       'graph': loadSearchGraph
     }
   });
-  
+
   $routeProvider.when('/sources', {
     templateUrl: 'sources_index.html',
     controller: 'SourcesIndexCtrl',
@@ -97,7 +97,7 @@ aleph.config(['$routeProvider', '$locationProvider', 'cfpLoadingBarProvider',
     loginRequired: false
   });
 
-  $locationProvider.html5Mode(true);
+  $locationProvider.html5Mode(false);
 }]);
 
 

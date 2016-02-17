@@ -11,9 +11,9 @@ lxml
 normality>=0.1
 nose
 psycopg2
-pyelasticsearch==1.0
 requests>=2.5.1
 apikit
+schedule
 simplejson>=3.6.5
 six
 textract>=1.2.0
@@ -24,8 +24,7 @@ networkx
 XlsxWriter>=0.6.6
 SQLAlchemy-Utils>=0.29.8
 google-measurement-protocol
-# dropbox>=2.2.0
-
 https://github.com/pudo/archivekit/tarball/master
 https://github.com/pudo/loadkit/tarball/master
 gunicorn
+testing.elasticsearch

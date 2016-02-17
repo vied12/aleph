@@ -37,44 +37,67 @@ def get_list_facets(args):
             pass
 
 
+
 def document_query(args, fields=DEFAULT_FIELDS, sources=None, lists=None,
                    facets=True, highlights=False):
     if not isinstance(args, MultiDict):
         args = MultiDict(args)
 
-    if True:
-        logging.debug('treating as regex')
-        filtered_q = _build_qstr_query(args)
-        filtered_q = _add_entities_filter(filtered_q, args)
-        filtered_q = _add_attribute_filter(filtered_q, args)
-        filtered_q = _add_collections_filter(filtered_q, args, sources)
-        aggs = _make_aggregations(facets, filtered_q, args, lists)
-        weighted_q = _wrap_weighting(filtered_q)
+    filtered_q = _build_qstr_query(args)
+    filtered_q = _add_entities_filter(filtered_q, args)
+    filtered_q = _add_attribute_filter(filtered_q, args)
+    filtered_q = _add_collections_filter(filtered_q, args, sources)
+    aggs = _make_aggregations(facets, filtered_q, args, lists)
+
+    q = apply_sorting(filtered_q, args, aggs, fields)
+
+    if highlights:
+        q['highlight'] = _make_highlights(fields)
+
+    return q
+
+def apply_sorting(q, args, aggs, fields):
+    '''
+    Ordering is specified by the 'sort' query parameter. Possible values are:
+
+    1) 'raw' -- Raw lucene score
+    Appropriate if you want to completely ignore recentness
+
+    2) 'best' -- Lucene score, with date-based weighting (DEFAULT)
+    This uses ES/Lucene's 'function_score', and combines the relevance
+    score with a boost for more recent documents
+
+    3) 'date' -- pure date-based weighting
+    Using a plain sort, we ignore everything except the updated_at date
+
+    NB both date orderings updated_at rather than filing date. This
+    is because the filing date is not (currently) formatted as a date.
+    '''
+    
+    if args.get('sort', None) == 'date':
+        q = {
+            'query': q,
+            #'query': weighted_q,
+            'aggregations': aggs,
+            '_source': fields
+        }
+        q['sort'] = [
+            { "filed_at": {"order": "desc"}},
+            ]
+    elif args.get('sort', None) == 'relevance':
+        q = {
+            'query': q,
+            'aggregations': aggs,
+            '_source': fields
+        }
+    else:
+        weighted_q = _wrap_weighting(q)
         q = {
             #'query': filtered_q,
             'query': weighted_q,
             'aggregations': aggs,
             '_source': fields
         }
-
-    else:
-        logging.debug('treating as non-regex')
-        filtered_q = _build_basic_query(args)
-        filtered_q = _add_entities_filter(filtered_q, args)
-        filtered_q = _add_attribute_filter(filtered_q, args)
-        filtered_q = _add_collections_filter(filtered_q, args, sources)
-        aggs = _make_aggregations(facets, filtered_q, args, lists)
-        q = {
-            'query': filtered_q,
-            'aggregations': aggs,
-            '_source': fields
-        }
-
-        
-
-    if highlights:
-        q['highlight'] = _make_highlights(fields)
-
     return q
 
 def _wrap_weighting(q):
@@ -146,39 +169,6 @@ def _partial_regex(querypart):
 
 
 
-def _build_advanced_query(args):
-    qstr = args.get('q', '').strip()
-    if len(qstr):
-        regex_pattern = 'regex:\S+'
-        regexes = [_partial_regex(x) for x in re.findall(regex_pattern, qstr)]
-        qstr = re.subn(regex_pattern, '', qstr)[0]
-        filtered_q = {
-            "bool": {
-                "must": [{
-                    "multi_match": {
-                        "query": qstr,
-                        "fields": QUERY_FIELDS,
-                        "type": "best_fields",
-                        "cutoff_frequency": 0.0007,
-                        "operator": "and",
-                    },
-                }],
-                "should": [
-                    {
-                    "multi_match": {
-                        "query": qstr,
-                        "fields": QUERY_FIELDS,
-                        "type": "phrase"
-                    },
-                },
-                               
-                           ]
-            }
-        }
-        filtered_q['bool']['must'].append(regexes)
-    else:
-        filtered_q = {'match_all': {}}
-    return filtered_q
 
 def _build_qstr_query(args):
     qstr = args.get('q', '').strip()
@@ -205,34 +195,6 @@ def _build_qstr_query(args):
                 #},
                 #               
                 #           ]
-            }
-        }
-    else:
-        filtered_q = {'match_all': {}}
-    return filtered_q
-
-
-def _build_basic_query(args):
-    qstr = args.get('q', '').strip()
-    if len(qstr):
-        filtered_q = {
-            "bool": {
-                "must": {
-                    "multi_match": {
-                        "query": qstr,
-                        "fields": QUERY_FIELDS,
-                        "type": "best_fields",
-                        "cutoff_frequency": 0.0007,
-                        "operator": "and",
-                    },
-                },
-                "should": {
-                    "multi_match": {
-                        "query": qstr,
-                        "fields": QUERY_FIELDS,
-                        "type": "phrase"
-                    },
-                }
             }
         }
     else:
