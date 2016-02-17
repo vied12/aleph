@@ -3,7 +3,7 @@ web:
 	python aleph/manage.py runserver
 
 worker:
-	celery -A aleph.queue -c 15 -l INFO worker -n `cat /proc/sys/kernel/random/uuid`
+	celery -A aleph.queue -c 25 -l INFO worker -n `cat /proc/sys/kernel/random/uuid`
 
 
 # single-threded worker with lots of debug logging, on a separate queue

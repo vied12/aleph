@@ -60,8 +60,15 @@ class Crawler(object):
     def make_tag(self, title=None, url=None, **kwargs):
         kwargs['title'] = title
         kwargs['url'] = url
-        kwargs = [repr((k, unicode(v))) for k, v in kwargs.items()]
-        return sha1('$'.join(kwargs)).hexdigest()
+
+        kwjoin = []
+        for k,v in kwargs.items():
+            if isinstance(v, unicode):
+                kwjoin.append(repr((k,v)))
+            else:
+                kwjoin.append(repr((k,unicode(v or '', errors='replace'))))
+        #kwargs = [repr((k, unicode(v or '', errors='replace'))) for k, v in kwargs.items()]
+        return sha1('$'.join(kwjoin)).hexdigest()
 
     def check_tag(self, tag=None, title=None, url=None, **kwargs):
         if tag is None:
