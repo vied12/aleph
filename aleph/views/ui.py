@@ -1,6 +1,6 @@
 import os
 import uuid
-from flask import render_template, request, make_response
+from flask import render_template, request, make_response, redirect
 
 from aleph import authz
 from aleph.core import app
@@ -34,6 +34,23 @@ def ui(**kwargs):
                             max_age=60 * 60 * 24 * 365, # 1 year
                             )
     return rsp
+
+@app.route('/lists/<path:id>')
+@app.route('/lists')
+@app.route('/sources/<path:slug>')
+@app.route('/sources')
+@app.route('/search')
+@app.route('/search/export')
+@app.route('/search/graph')
+@app.route('/graph')
+@app.route('/login')
+def legacy(**kwargs):
+    '''Anyone following an old link should be redirected
+    to the new, fragment-based, equivalent
+    '''
+    path = '/#/%s' % request.url.split('/', 3)[-1]
+    return redirect(path)
+
 
 
 @app.route('/sources/<path:slug>')
