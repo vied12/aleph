@@ -15,7 +15,6 @@ from aleph import default_settings
 
 app = Flask(__name__)
 settingsfile = app.config.get('configfile', None)
-print('Wake Up')
 app.config.from_object(default_settings)
 if settingsfile:
     print('SET SET SET')
