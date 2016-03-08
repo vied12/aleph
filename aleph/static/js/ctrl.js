@@ -1,7 +1,7 @@
 
-aleph.controller('AppCtrl', ['$scope', '$rootScope', '$location', '$route', '$http', '$modal', '$q',
+aleph.controller('AppCtrl', ['$scope', '$rootScope', '$routeParams', '$window', '$location', '$route', '$http', '$modal', '$q',
                              'Flash', 'Session', 'Query', 'QueryContext', '$sce',
-function($scope, $rootScope, $location, $route, $http, $modal, $q, Flash, Session, Query, QueryContext) {
+			     function($scope, $rootScope, $routeParams, $window, $location, $route, $http, $modal, $q, Flash, Session, Query, QueryContext) {
   $scope.session = {logged_in: false};
   $scope.query = Query;
   $scope.flash = Flash;
@@ -44,6 +44,15 @@ function($scope, $rootScope, $location, $route, $http, $modal, $q, Flash, Sessio
     });
     $scope.query.state = Query.load();
   });
+
+  $rootScope.$on('$routeChangeSuccess', function() {
+        var output=$location.path()+"?";
+        angular.forEach($routeParams,function(value,key){
+            output+=key+"="+value+"&";
+        })
+      output=output.substr(0,output.length-1);
+      $window.ga('send', 'pageview', output);
+    });
 
   $scope.suggestEntities = function(prefix) {
     var dfd = $q.defer();
