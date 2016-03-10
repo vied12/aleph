@@ -93,7 +93,7 @@ aleph.config(['$routeProvider', '$locationProvider', 'cfpLoadingBarProvider',
   });
 
   $routeProvider.otherwise({
-    redirectTo: '/help',
+    redirectTo: '/search',
     loginRequired: false
   });
 
