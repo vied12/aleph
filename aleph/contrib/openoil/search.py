@@ -3,6 +3,7 @@ from six.moves import urllib
 import google_measurement_protocol
 from flask import Blueprint
 blueprint = Blueprint('search', __name__)
+from aleph.search import search_documents
 
 def find_original_url(doc):
     '''
@@ -60,3 +61,12 @@ def exit_redirect():
     google_measurement_protocol.report(
         ua, user_id, view)
     return redirect(newurl)
+
+def docs_this_week():
+    '''
+    Return how many documents have been added
+    to the index this week
+    '''
+    query = {'query': {'range': {'created_at': {'gte': 'now-7d/d'}}}}
+    res = search_documents(query)
+    return res.result['hits']['total']
