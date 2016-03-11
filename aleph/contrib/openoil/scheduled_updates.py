@@ -5,6 +5,7 @@ import schedule
 import time, datetime
 from aleph.crawlers import crawl_source
 from aleph.core import es, es_index
+from aleph.contrib.openoil.alerts import check_alerts
 
 
 
@@ -25,6 +26,8 @@ def schedule_updates():
     # We start our scrape just after, at 0511 CET, and allow 3 hours for it to
     # upload
     schedule.every(1).days.at("08:00").do(_crawler('sedar-partial-content'))
+
+    schedule.every(1).days.at("16:00").do(check_alerts)
 
     schedule.run_all()
     
