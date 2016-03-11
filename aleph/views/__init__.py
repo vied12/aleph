@@ -8,6 +8,7 @@ from aleph.core import app, login_manager
 from aleph.views.ui import ui # noqa
 from aleph.assets import assets # noqa
 from aleph.model import User
+from aleph.views.alerts_api import blueprint as alerts_api
 from aleph.views.data_api import blueprint as data_api
 from aleph.views.search_api import blueprint as _search_api
 from aleph.views.graph_api import blueprint as graph_api
@@ -32,6 +33,7 @@ app.register_blueprint(exports_api)
 app.register_blueprint(sources_api)
 app.register_blueprint(crawlers_api)
 app.register_blueprint(public_api)
+app.register_blueprint(alerts_api)
 
 @login_manager.request_loader
 def load_user_from_request(request):

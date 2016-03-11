@@ -36,10 +36,15 @@ def get_list_facets(args):
         except:
             pass
 
-
+def _add_date_filter(filtered_q, args, newerthan):
+    if newerthan is None:
+        return filtered_q
+    cf = {'range': {'updated_at': {"gte": newerthan}}}
+    filtered_q = add_filter(filtered_q, cf)
+    return filtered_q
 
 def document_query(args, fields=DEFAULT_FIELDS, sources=None, lists=None,
-                   facets=True, highlights=False):
+                   facets=True, highlights=False, newerthan=None):
     if not isinstance(args, MultiDict):
         args = MultiDict(args)
 
@@ -47,6 +52,7 @@ def document_query(args, fields=DEFAULT_FIELDS, sources=None, lists=None,
     filtered_q = _add_entities_filter(filtered_q, args)
     filtered_q = _add_attribute_filter(filtered_q, args)
     filtered_q = _add_collections_filter(filtered_q, args, sources)
+    filtered_q = _add_date_filter(filtered_q, args, newerthan)
     aggs = _make_aggregations(facets, filtered_q, args, lists)
 
     q = apply_sorting(filtered_q, args, aggs, fields)

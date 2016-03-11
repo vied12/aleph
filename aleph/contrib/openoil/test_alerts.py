@@ -6,6 +6,14 @@ import datetime
 def get_test_user():
     return db.session.query(User).first()
 
+def test_search():
+    al = Alert(query = 'China',
+               user = get_test_user(),
+               label = 'test query: China',
+               checking_interval = 5)
+    res = alerts.run_alert(al)
+    
+
 def test_db_alert_dates():
     al = Alert(query = 'test data',
                user = get_test_user(),
