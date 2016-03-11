@@ -17,7 +17,6 @@ app = Flask(__name__)
 settingsfile = app.config.get('configfile', None)
 app.config.from_object(default_settings)
 if settingsfile:
-    print('SET SET SET')
     app.config.from_pyfile(settingsfile)
 else:
     app.config.from_envvar('ALEPH_SETTINGS', silent=True)

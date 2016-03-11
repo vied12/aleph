@@ -29,3 +29,6 @@ https://github.com/pudo/archivekit/tarball/master
 https://github.com/pudo/loadkit/tarball/master
 gunicorn
 testing.elasticsearch
+envelopes
+html2text
+jsonschema
