@@ -2,7 +2,9 @@
 *.DS_Store
 *.egg-info
 *.sqlite3
-
+\#*\#
+*~1~
+*~2~
 .env
 settings.py
 
