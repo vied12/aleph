@@ -32,3 +32,5 @@ testing.elasticsearch
 envelopes
 html2text
 jsonschema
+flask-user
+flask-security
