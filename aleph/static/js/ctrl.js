@@ -12,9 +12,9 @@ aleph.controller('AppCtrl', ['$scope', '$rootScope', '$routeParams', '$window', 
       $scope.submitSearch();
       });
 
-    window.scp = $scope;
+  window.scp = $scope;
 
-    source_labels = {
+  source_labels = {
 	'sec-edgar': 'US stock exchange filings',
 	'edgar-partial-content': 'US stock exchange filings',
 	'rigzone': 'Industry news',
@@ -28,8 +28,8 @@ aleph.controller('AppCtrl', ['$scope', '$rootScope', '$routeParams', '$window', 
 
 
 
-    $scope.sourceLabel = function(key){
-	if(key in source_labels){
+  $scope.sourceLabel = function(key){
+      if(key in source_labels){
 	    return source_labels[key]}
 	return key;
     }
@@ -90,6 +90,21 @@ aleph.controller('AppCtrl', ['$scope', '$rootScope', '$routeParams', '$window', 
       $location.path('/search');
     }
   };
+
+  $scope.emailAlertButton = function(x){
+    $http({
+      url: '/api/1/alerts',
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      data: JSON.stringify({
+	// XXX q is sometimes a string, sometimes an array, dunno why
+	// so we have a flaky workaround
+	'query': '' + $scope.query.state.q,
+	'custom_label': 'Search for ' + $scope.query.state.q})
+    }).success(function(data){
+      console.log('added email alert');
+    })
+  }
 
   $scope.clearSearch = function(form) {
     var mode = Query.mode();

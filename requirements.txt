@@ -33,3 +33,5 @@ python-dateutil>=2.4.2
 envelopes
 html2text
 jsonschema
+flask-user
+flask-security
