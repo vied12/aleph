@@ -1,5 +1,8 @@
 from flask import Blueprint, request
 from flask.ext.login import current_user
+
+from flask.ext.user import login_required
+
 from apikit import obj_or_404, request_data, jsonify
 
 from aleph import authz
@@ -11,7 +14,7 @@ from aleph.validation import validate
 alerts_schema = 'https://aleph.grano.cc/operational/alert.json#'
 blueprint = Blueprint('alerts', __name__)
 
-
+@login_required
 @blueprint.route('/api/1/alerts', methods=['GET'])
 def index():
     authz.require(authz.logged_in())

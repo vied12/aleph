@@ -7,19 +7,34 @@ from aleph.model.forms import UserForm
 
 log = logging.getLogger(__name__)
 
+from flask_user import UserMixin
+from flask_user.forms import RegisterForm
+from flask_wtf import Form
+from wtforms import StringField, SubmitField, validators
+
 
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
 
+#
+# Much code adapted from
+# https://github.com/lingthio/Flask-User-starter-app/blob/master/app/core/models.py
+# 
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.Unicode, nullable=True)
+    email = db.Column(db.Unicode,
+                      #following attributes are for flask-user
+                      nullable=False,
+                      unique=True)
     display_name = db.Column(db.Unicode, nullable=True)
-    is_admin = db.Column(db.Boolean, nullable=False, default=False)
     active = db.Column(db.Boolean, nullable=False, default=True)
 
+    # Aleph-specific columns
+    is_admin = db.Column(db.Boolean, nullable=False, default=False)
+    
     twitter_id = db.Column(db.Unicode)
     facebook_id = db.Column(db.Unicode)
 
@@ -29,6 +44,21 @@ class User(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow,
                            onupdate=datetime.utcnow)
 
+
+    # Columns required for flask-user
+
+    confirmed_at = db.Column(db.DateTime())
+    password = db.Column(db.String(255), nullable=False, server_default='')
+    reset_password_token = db.Column(db.String(100), nullable=False, server_default='')
+    # 'active' already defined above
+    # omitting first and last name
+
+    # Relationships
+    roles = db.relationship('Role', secondary='users_roles',
+                            backref=db.backref('user', lazy='dynamic'))
+
+
+    
     def is_active(self):
         return self.active
 
@@ -103,3 +133,35 @@ class User(db.Model):
     def by_facebook_id(cls, facebook_id):
         q = db.session.query(cls).filter_by(facebook_id=str(facebook_id))
         return q.first()
+
+
+# Define the Role data model
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(50), nullable=False, server_default=u'', unique=True)  # for @roles_accepted()
+    label = db.Column(db.Unicode(255), server_default=u'')  # for display purposes
+
+# Define the UserRoles association model
+class UsersRoles(db.Model):
+    __tablename__ = 'users_roles'
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id', ondelete='CASCADE'))
+    role_id = db.Column(db.Integer(), db.ForeignKey('roles.id', ondelete='CASCADE'))
+
+# Define the User registration form
+# It augments the Flask-User RegisterForm with additional fields
+class MyRegisterForm(RegisterForm):
+    first_name = StringField('First name', validators=[
+        validators.DataRequired('First name is required')])
+    last_name = StringField('Last name', validators=[
+        validators.DataRequired('Last name is required')])
+
+
+# Define the User profile form
+class UserProfileForm(Form):
+    first_name = StringField('First name', validators=[
+        validators.DataRequired('First name is required')])
+    last_name = StringField('Last name', validators=[
+        validators.DataRequired('Last name is required')])
+    submit = SubmitField('Save')
