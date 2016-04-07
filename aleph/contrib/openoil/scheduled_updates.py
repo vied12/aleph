@@ -19,6 +19,7 @@ def schedule_updates():
     # EDGAR
     schedule.every(1).days.at("04:30").do(_crawler('sec-edgar'))
 
+    schedule.every(1).days.at("01:00").do(_crawler('openoil-internal-documents'))
     # SEDAR
     # Sedar website stops updating at 11pm ET, i.e. 0500 CET
     # We start our scrape just after, at 0511 CET, and allow 3 hours for it to

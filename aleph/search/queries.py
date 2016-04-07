@@ -112,12 +112,12 @@ def _wrap_weighting(q):
                'functions': [
 
                    # give extra weight to documents from our contracts collection
-                   {'filter': {'term': {'collection': 'openoil-contracts'}},
-                    'weight': 2},
+                   #{'filter': {'term': {'collection': 'openoil-contracts'}},
+                   # 'weight': 2},
 
                    # give extra weight to more recent documents
                    {'exp': {
-                       'updated_at': {'scale': '10w'}
+                       'created_at': {'scale': '10w'}
                    }},
 
                 ],
@@ -253,7 +253,7 @@ def _make_highlights(fields):
     highlights = {'fields': {}}
     for field in fields:
         highlights['fields'][field] = {
-            "number_of_fragments": 99}
+            "number_of_fragments": 3}
     return highlights
 
 def _make_aggregations(facets, filtered_q, args, lists):
