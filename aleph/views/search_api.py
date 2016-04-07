@@ -120,8 +120,11 @@ def preprocess_data(data):
 
     return data
 
-@blueprint.route('/api/1/query')
-def query():
+def _query():
+    '''
+    everything here should be applicable both to the internal and to the
+    public api
+    '''
     etag_cache_keygen()
     query = document_query(request.args, lists=authz.authz_lists('read'),
                            sources=authz.authz_sources('read'),
@@ -132,6 +135,11 @@ def query():
     data = pager.to_dict()
     #import ipdb; ipdb.set_trace()
     data['facets'] = transform_facets(results.result.get('aggregations', {}))
+    return data
+
+@blueprint.route('/api/1/query')
+def query():
+    data = _query()
     data = preprocess_data(data)
     return jsonify(data)
 
