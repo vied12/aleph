@@ -8,3 +8,6 @@ settings.py
 
 aleph/static/.webassets-cache/*
 aleph/static/vendor/*
+
+*~
+*#
