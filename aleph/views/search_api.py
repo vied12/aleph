@@ -9,6 +9,7 @@ from aleph.views.cache import etag_cache_keygen
 from aleph.search.queries import document_query, get_list_facets
 from aleph.search.attributes import available_attributes
 from aleph.search import search_documents
+from aleph.contrib.openoil.search import preprocess_data
 
 from six.moves import urllib
 import google_measurement_protocol

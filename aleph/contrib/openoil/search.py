@@ -30,7 +30,7 @@ def preprocess_data(data):
 	  ['Industry Sector', ['Industry Sector', 'industry', 'assignedSIC', 'sector_name']],
 	  ['Filing Type', ['Filing Type', 'filing_type', 'file_type', 'document_type']],
 	  ['Filing Date', ['Filing Date', 'date', 'filingDate', 'announcement_date']],	   
-	   ]    
+	   ]
     for result in data['results']:
         result['attribs_to_show'] = []
         for human_name, db_names in ordered_attribs:
@@ -40,7 +40,6 @@ def preprocess_data(data):
                     result['top_attribs'], result['bottom_attribs'] = result['attribs_to_show'][:2], result['attribs_to_show'][2:]
                     break
         original_url = find_original_url(result) or ''
-        print(original_url)
         result['redirect_url'] = "https://search.openoil.net/api/1/exit?u=%s" % urllib.parse.quote(original_url.encode('utf8'))
 
     return data

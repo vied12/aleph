@@ -22,8 +22,10 @@ import aleph.search
 manager = Manager(usage="openoil admin tasks")
 
 def replace_es(query, updatefunc, index='aleph_test', howmany=10):
-    perpage = 500
-    for offset in range(0,howmany,perpage):
+    perpage = 50
+    start = 522050
+    for offset in range(start,howmany,perpage):
+        print('# %s' % offset)
         results = es.search(
             index=index,
             body=query,
@@ -57,13 +59,15 @@ def guess_filing_date(body):
 
 def fix_date(body):
     filing_date = guess_filing_date(body)
-    print('guessed filing date for %s as %s' % (body['collection'], filing_date.strftime('%Y%m%d') if filing_date else '[None]'))
+    #print('guessed filing date for %s as %s' % (body['collection'], filing_date.strftime('%Y%m%d') if filing_date else '[None]'))
     if filing_date:
         body['filed_at'] = filing_date.strftime('%Y%m%d')
     elif body['collection'] not in (
             'rigzone', 'lse', 'sedar-partial-content',
-            'johannesburg-exchange', 'eiti'):
-        import ipdb; ipdb.set_trace()
+            'johannesburg-exchange', 'eiti', 'openoil-contracts',
+            'corporate-pdfs'):
+        pass
+        #import ipdb; ipdb.set_trace()
     return body
 
 @manager.command
@@ -78,8 +82,7 @@ def fixsedar(n=10):
         return body
     n=int(n)
     query = {'query': {
-        'term': {'collection': 'sedar-partial-content'}}
-             }
+        'term': {'collection': 'sedar-partial-content'},}}
     replace_es(query, _inner, index='aleph_dev', howmany=n)
 
 @manager.command
@@ -89,8 +92,11 @@ def mungees(n=10):
     -n for number of docs to look at
     """
     n = int(n)
+    query = {'query': {
+        'term': {'collection': 'sec-edgar'}
+             }}
     query = {}
-    replace_es(query, fix_date, index='aleph_dev', howmany=n)
+    replace_es(query, fix_date, index='aleph', howmany=n)
     print('done')
 
 @manager.command
@@ -103,15 +109,17 @@ def get_mappings():
 @manager.command
 def console():
     query = {'query': {
-        'term': {'collection': 'sedar-partial-content'}}
-             }
-    res = es.search(body=query,index='aleph_dev')
+        'term': {#'collection': 'sec-edgar',
+                 'filed_at': '20160216'}
+    }
+    }
+    res = es.search(body=query,index='aleph')
     import ipdb; ipdb.set_trace()
 
     
 @manager.command
 def add_date_mapping():
-    assert es_index == 'aleph_dev'
+    #assert es_index == 'aleph_dev'
     newfield = {"properties":
                 {
                     "filed_at": {
