@@ -168,10 +168,17 @@ def _partial_regex(querypart):
         }
 
 
-
+def clean_query_input(q):
+    # replace smart quotes
+    print(q)
+    q = q.replace(u"\u2018", '"').replace(u"\u2019", '"').replace(u"\u201c",'"').replace(u"\u201d", '"')
+    print(q)
+    # remove trailing/leading whitespace
+    q = q.strip()
+    return q
 
 def _build_qstr_query(args):
-    qstr = args.get('q', '').strip()
+    qstr = clean_query_input(args.get('q', ''))
     if len(qstr):
         filtered_q = {
             "bool": {
