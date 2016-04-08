@@ -32,10 +32,25 @@ The API will return a JSON dictionary. The most important item wihin it is 'resu
 - score: how well the document matches the search query, as measured by elasticsearch
 - updated_at: when Aleph downloaded the document
 
-## Example
-
-TODO
 
 ## Python example
 
-TODO
+Using python, we can get a list of documents from Australian-listed companies talking about out-of-court settlements:
+
+'''
+
+import requests
+
+req = requests.get(
+    'https://search.openoil.net/aleph_api/1/query',
+    params={
+        'q': '"settled out of court"',
+        'source': 'asx',
+        })
+
+for result in req.json()['results']:
+    print(result['title'])
+
+'''
+
+The URL we are requesting here is https://search.openoil.net/aleph_api/1/query?q=%22settled+out+of+court%22&source=asx
