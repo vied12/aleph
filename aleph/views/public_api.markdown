@@ -12,12 +12,19 @@ Currently the only supported request is searching through documents, at
 
 https://search.openoil.net/aleph_api/1/query
 
+## Authentication
+
+To use the API, you need an openoil API key. You can obtain a key at https://openoil.net/openoil-api/
+
+You should include this as in all API requests.
+
 ## Request Format
 
 The following parameters are available:
 
+ - apikey -- your OpenOil API key (oo_xxxxxxxxxxxxxxxx), obtained from https://openoil.net/openoil-api
  - q -- search terms, using the elasticsearch-based syntax described
-at http://search.openoil.net/help
+at https://search.openoil.net/help
  - offset, limit -- for paging of results
  - source -- which document bases to include
 

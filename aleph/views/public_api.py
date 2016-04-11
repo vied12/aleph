@@ -1,5 +1,6 @@
-from flask import Blueprint
+from flask import Blueprint, abort, request
 from apikit import jsonify
+import requests
 
 from aleph.views import search_api
 
@@ -39,8 +40,16 @@ def public_process(data):
     nd = {}
     return data
 
+def valid_api_key(request):
+    key = request.args.get('apikey', 'INVALID')
+    result = requests.get('http://api.openoil.net/apikey/check', params={'apikey': key})
+    return result.status_code == 200
+    
+
 @blueprint.route('/aleph_api/1/query')
 def query():
+    if not valid_api_key(request):
+        abort(403)
     data = search_api._query()
     data = search_api.preprocess_data(data)
     data = public_process(data)
