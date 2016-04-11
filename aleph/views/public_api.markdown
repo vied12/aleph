@@ -52,6 +52,7 @@ req = requests.get(
     params={
         'q': '"settled out of court"',
         'source': 'asx',
+        'apikey': 'oo_xxxxxxxxx', # your key here!
         })
 
 for result in req.json()['results']:
@@ -79,4 +80,4 @@ JAMES HARDIE INDUST (2008-05-22): KPMG Report - 31 March 2008
 ```
 
 
-The URL we are requesting here is https://search.openoil.net/aleph_api/1/query?q=%22settled+out+of+court%22&source=asx
+The URL we are requesting here is https://search.openoil.net/aleph_api/1/query?q=%22settled+out+of+court%22&source=asx&apikey=oo_xxxxxxxxxxxxxxx
