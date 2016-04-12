@@ -51,14 +51,14 @@
   </head>
   <body>
     <p>
-      new documents have been found for your alert: <strong>{{alert.label}}</strong>.
+      new documents have been found for your alert: <strong><a href="{{ alert.search_url}}">{{alert.label}}</a></strong>.
     </p>
 
     <table>
       {% for result in hits %}
         <tr class="result">
           <td>
-	    <a href="{{ result._source.source_url }}"> {{result._source.title}} </a> </li>
+	    <a href="{{ result._source.redirect_url }}"> {{result._source.title}} </a> </li>
       {% endfor %}
     </table>
 

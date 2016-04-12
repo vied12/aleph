@@ -2,6 +2,8 @@ from aleph.core import db
 from aleph.model.user import User
 from datetime import datetime, timedelta
 
+from six.moves import urllib
+
 class Alert(db.Model):
     '''
     Also consider adding:
@@ -47,6 +49,14 @@ class Alert(db.Model):
     def to_dict(self):
         attrs = ('id', 'label', 'query', 'checking_interval', 'user_id', 'created_at', 'checked_at')
         return {attr: getattr(self, attr) for attr in attrs}
+
+    @property
+    def search_url(self):
+        '''
+        where to go to reach the original search
+        '''
+        return 'http://search.openoil.net/#/search?q=' + urllib.parse.quote_plus(self.query)
+        
         
     @classmethod
     def by_id(cls, id, role=None):
