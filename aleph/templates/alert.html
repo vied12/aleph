@@ -62,6 +62,12 @@
       {% endfor %}
     </table>
 
+<hr><h3>Your other searches</h3>
+<ul>
+  {% for al in other_searches %}
+  <li><a href="{{ al.search_url}}">{{al.label}}</a></li>
+  {% endfor %}
+</ul>
     <hr>
     <p class="footer">
       You will receive notifications like this whenever {{app_title}} adds documents that

@@ -44,10 +44,16 @@ def mail_results(al, results):
     subject = 'Aleph: %s new documents matching %s' % (results.result['hits']['total'], al.label)
     templatedir = dirname(dirname(dirname(abspath(__file__)))) + '/templates/'
     env = Environment(loader=FileSystemLoader(templatedir))
+
+    # every other search from the same user, for display in the mail
+    other_searches = db.session.query(
+        Alert).filter(Alert.user_id == al.user_id)
+    
     html_body = env.get_template('alert.html').render(**{
         'hits': results.result['hits']['hits'],
         'user': al.user,
-        'alert': al})
+        'alert': al,
+        'other_searches': other_searches})
     text_body = html2text.html2text(html_body)
     
     msg = Envelope(
