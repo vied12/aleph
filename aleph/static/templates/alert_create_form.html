@@ -1,0 +1,14 @@
+ <div>
+    <span class="close" ng-click="cancel()">x</span>
+    <p>Set up email alert</p>
+
+    <form novalidate class="simple-form" name="alertForm" ng-submit="emailAlertSubmit(alertForm)">
+    Label: <input name="alert_label" type="text" ng-class="alert_label"/><br />
+    Check: <input name="alert_frequency" type="radio" value="1" ng-class="alert_frequency" />daily
+    <input type="radio" name="alert_label" value="7" ng-class="alert_frequency" />weekly<br />
+    <!--<button ng-click="emailAlertSubmit(alertForm)">Submit</button> -->
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+
+</div>
+

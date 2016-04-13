@@ -22,14 +22,14 @@ def index():
 @blueprint.route('/api/1/alerts', methods=['POST', 'PUT'])
 def create():
     authz.require(authz.logged_in())
-    #data = request_data()
     data = request.get_json()
     validate(data, alerts_schema)
     alert = Alert(
         user_id = current_user.id,
         query=data['query'],
         label=data.get('custom_label', data['query']),
-        checking_interval=7)
+        checking_interval=int(data.get('checking_interval', 9))
+        )
     db.session.add(alert)
     db.session.commit()
     return view(alert.id)

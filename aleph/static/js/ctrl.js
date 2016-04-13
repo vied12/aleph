@@ -91,21 +91,38 @@ aleph.controller('AppCtrl', ['$scope', '$rootScope', '$routeParams', '$window', 
     }
   };
 
-  $scope.emailAlertButton = function(x){
-    $http({
-      url: '/api/1/alerts',
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      data: JSON.stringify({
-	// XXX q is sometimes a string, sometimes an array, dunno why
-	// so we have a flaky workaround
-	'query': '' + $scope.query.state.q,
-	'custom_label': 'Search for ' + $scope.query.state.q})
-    }).success(function(data){
-      console.log('added email alert');
-    })
-  }
+    $scope.emailAlertButton = function(){
+	var emailModal = $modal.open({
+        templateUrl: 'alert_create_form.html',
+        controller: 'AlertCtrl',
+        backdrop: true
+    });
+	emailModal.result.then(
+	    function (formdata) {
+		postdata = {
+		    query: $scope.query.state.q[0],
+		    custom_label: formdata['alert_label'],
+		    checking_interval: formdata['alert_frequency'],
+		    }
+		$http({
+		    url: '/api/1/alerts',
+		    method: 'POST',
+		    headers: {'Content-Type': 'application/json'},
+		    data: JSON.stringify(postdata)
+		}).success(function(data){
+		    Flash.message('added email alert', 'success');
+		})
 
+	    },
+	    function (result) {
+	    }
+	);
+
+    };
+
+
+
+ 								 
   $scope.clearSearch = function(form) {
     var mode = Query.mode();
     Query.clear();
@@ -133,7 +150,8 @@ aleph.controller('ProfileCtrl', ['$scope', '$location', '$modalInstance', '$http
     $modalInstance.dismiss('cancel');
   };
 
-  $scope.update = function(form) {
+      $scope.update = function(form) {
+	  console.log('scope update');
     var res = $http.post('/api/1/users/' + $scope.user.id, $scope.user);
     res.success(function(data) {
       $scope.user = data;
@@ -142,3 +160,22 @@ aleph.controller('ProfileCtrl', ['$scope', '$location', '$modalInstance', '$http
     });
   };
 }]);
+
+
+aleph.controller('AlertCtrl', ['$scope', '$location', '$modalInstance', '$http', 'Session',
+  function($scope, $location, $modalInstance, $http, Session) {
+//aleph.controller('AlertCtrl', ['$scope', '$modalInstance',  function($scope, $modalInstance){
+    var doodah = $scope;
+    $scope.wtf = 'gah';
+    
+    $scope.cancel = function(){
+	$modalInstance.dismiss('cancel');
+	};
+    $scope.emailAlertSubmit = function(form){
+	var formdata = {}
+	$.each($('[name=alertForm]').serializeArray(), function(i, field) {
+	    formdata[field.name] = field.value;
+	});
+	$modalInstance.close(formdata);
+	};
+}]); 
