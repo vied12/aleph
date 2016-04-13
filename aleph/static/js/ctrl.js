@@ -85,8 +85,27 @@ aleph.controller('AppCtrl', ['$scope', '$rootScope', '$routeParams', '$window', 
     }
   };
 
-  $scope.emailAlertButton = function(x){
-    $http({
+$scope.emailAlertButton = function(x){
+    var modal = document.getElementById('alertConfigure');
+    modal.style.display= "block";
+    var span = document.getElementsByClassName("close")[0];
+    /*span.onclick = function() {
+	modal.style.display = "none";
+    }
+    window.onclick = function(event) {
+	if (event.target == modal) {
+            modal.style.display = "none";
+	}
+    }*/
+
+}
+
+				 
+$scope.emailAlertSubmit = function(x){
+    console.log('email alert submitted');
+    var modal = document.getElementById('alertConfigure');
+    modal.style.display = "none";
+      $http({
       url: '/api/1/alerts',
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -98,8 +117,8 @@ aleph.controller('AppCtrl', ['$scope', '$rootScope', '$routeParams', '$window', 
     }).success(function(data){
       console.log('added email alert');
     })
-  }
-
+ }
+				 
   $scope.clearSearch = function(form) {
     var mode = Query.mode();
     Query.clear();

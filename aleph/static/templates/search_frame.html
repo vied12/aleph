@@ -1,39 +1,6 @@
 
 <div class="row">
-  <div class="col-md-9">
-    <ul class="nav nav-tabs">
-      <li role="presentation" ng-class="{'active': query.mode() == 'table'}">
-        <a ng-href="/#/search?{{ query.queryString() }}">
-          Documents <span class="badge">{{result.total || ''}}</span>
-        </a>
-      </li>
-      <li role="presentation" ng-class="{'active': 0}">
-	<a ng-href="/#/help">Help</a>
-      </li>
-      <li role="presentation" ng-class="{'active': 0}">
-	<a ng-href="http://openoil.us9.list-manage.com/subscribe?u=f93dde4012236ea543f4c2c9d&id=4b2e077e8a">Demo</a>
-      </li>
-
-      <!--
-      <li role="presentation" ng-class="{'active': query.mode() == 'graph'}">
-        <a ng-href="/#/search/graph?{{ query.queryString() }}">Actor network</a>
-      </li>
-      <li role="presentation" ng-class="{'active': query.mode() == 'export'}">
-        <a ng-href="/#/search/export?{{ query.queryString() }}">Export</a>
-      </li>-->
-    </ul>
-
-    <div class="alert alert-warning" ng-show="result.limit > 0 && !result.total">
-      No results were found.
-      <span ng-show="!session.logged_in">
-        You may need to log in before you can see more results.
-      </span>
-    </div>
-
-    <div ng-transclude></div>
-  </div>
-
-  <div class="col-md-3">
+  <div class="col-md-3 col-md-push-9">
 
     <div class="panel panel-default" ng-repeat="id in query.load().listfacet">
       <div class="panel-heading">
@@ -126,7 +93,6 @@
           ng-repeat="facet in result.facets.sources"
           ng-class="{'active': query.hasFilter('source', facet.key)}"
             ng-click="query.toggleFilter('source', facet.key)"
-	    ng-if="sources[facet.key].label != 'Canadian Corporate Filings'"
 	    tooltip="{{sourceLabel(facet.key)}}"
 	    tooltip-append-to-body="true"
 	    tooltip-placement="left"
@@ -139,5 +105,60 @@
       </ul>
     </div>
   </div>
+
+
+  <div class="col-md-9 col-md-pull-3">
+    <ul class="nav nav-tabs">
+      <li role="presentation" ng-class="{'active': query.mode() == 'table'}">
+        <a ng-href="/#/search?{{ query.queryString() }}">
+          Documents <span class="badge">{{result.total || ''}}</span>
+        </a>
+      </li>
+      <li role="presentation" ng-class="{'active': 0}">
+	<a ng-href="/#/help">Help</a>
+      </li>
+      <li role="presentation" ng-class="{'active': 0}">
+	<a ng-href="http://openoil.us9.list-manage.com/subscribe?u=f93dde4012236ea543f4c2c9d&id=4b2e077e8a">Demo</a>
+      </li>
+
+      <!--
+      <li role="presentation" ng-class="{'active': query.mode() == 'graph'}">
+        <a ng-href="/#/search/graph?{{ query.queryString() }}">Actor network</a>
+      </li>
+      <li role="presentation" ng-class="{'active': query.mode() == 'export'}">
+        <a ng-href="/#/search/export?{{ query.queryString() }}">Export</a>
+      </li>-->
+    </ul>
+
+    <div class="alert alert-warning" ng-show="result.limit > 0 && !result.total">
+      No results were found.
+      <span ng-show="!session.logged_in">
+        You may need to log in before you can see more results.
+      </span>
+    </div>
+
+    <div ng-transclude></div>
+  </div>
+
+
+<!-- The Modal -->
+<div id="alertConfigure" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">x</span>
+    <p>Set up email alert</p>
+
+    <form novalidate class="simple-form">
+    Label: <input type="text"/><br />
+    Check: <input type="radio" value="daily" />daily
+    <input type="radio" value="weekly" />weekly<br />
+    <button ng-click="emailAlertSubmit()">Submit</button>
+  </form>
+
+  </div>
+
+</div>
+
 </div>
 

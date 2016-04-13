@@ -58,7 +58,7 @@ def mail_results(al, results):
     
     msg = Envelope(
         from_addr = (u'daniel.ohuiginn@openoil.net', u"Dan O'Huiginn"),
-        to_addr = (u'daniel@ohuiginn.net', u"Dan O'Huiginn"),
+        to_addr = (al.user.email),
         subject = subject,
         text_body = text_body,
         html_body = html_body)
