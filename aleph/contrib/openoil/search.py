@@ -5,6 +5,10 @@ from flask import Blueprint
 blueprint = Blueprint('search', __name__)
 from aleph.search import search_documents
 
+def make_redirect_url(destination):
+    return "https://search.openoil.net/api/1/exit?u=%s" % urllib.parse.quote(destination.encode('utf8'))
+
+
 def find_original_url(doc):
     '''
     Various hacks to figure out the original source url of
@@ -41,8 +45,7 @@ def preprocess_data(data):
                     break
         original_url = find_original_url(result) or ''
         print(original_url)
-        result['redirect_url'] = "https://search.openoil.net/api/1/exit?u=%s" % urllib.parse.quote(original_url.encode('utf8'))
-
+        result['redirect_url'] = make_redirect_url(original_url)
     return data
 
 @blueprint.route('/api/1/exit')

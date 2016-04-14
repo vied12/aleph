@@ -51,14 +51,14 @@
   </head>
   <body>
     <p>
-      New documents have been found for your alert: <strong><a href="{{ alert.search_url}}">{{alert.label}}</a></strong>.
+      New documents have been found for your alert: <strong><a href="https://search.openoil.net/api/1/exit?source=email&u={{ alert.search_url|urlencode}}">{{alert.label}}</a></strong>.
     </p>
 
     <table>
       {% for result in hits %}
         <tr class="result">
           <td>
-	    <a href="{{ result._source.redirect_url }}"> {{result._source.title}} </a> </li>
+	    <a href="https://search.openoil.net/api/1/exit?source=email&u={{ result._source.source_url|urlencode}}">{{result._source.title}} </a> </li>
       {% endfor %}
     </table>
 
