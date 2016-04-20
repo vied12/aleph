@@ -53,33 +53,39 @@ API of world's oil concessions</a> </li><li> <a href="http://openoil.net/corpora
 
       
       
-      <div class="container-fluid">
+      <div> <!-- was class="container-fluid" -->
         <form class="navbar-form navbar-left"
           role="search" ng-submit="submitSearch(form)">
           <div class="form-group">
             <div class="input-group navbar-searchbox">
-              <span class="input-group-addon brand-field"><a href="https://openoil.net"><img src="https://openoil.net/wp/wp-content/uploads/2013/11/OpenOil-logo-2.jpg" width="24px"></a> Search</span>
+              <span class="input-group-addon brand-field" id="oo_searchlogo"><a href="https://openoil.net"><img src="https://openoil.net/wp/wp-content/uploads/2013/11/OpenOil-logo-2.jpg" width="24px"></a> Search</span>
               <input type="text" class="search-query form-control" autofocus
                 ng-model="query.state.q" placeholder="Search people, companies, countries and other entities"
                 typeahead="entity for entity in suggestEntities($viewValue)"
                 typeahead-min-length="2"
                 typeahead-focus-first="false"
                 typeahead-template-url="entity_link.html"
-                typeahead-on-select="acceptSuggestion($item)">
+                     typeahead-on-select="acceptSuggestion($item)">
 
-	      Sort by: <select name="sort" ng-model="query.state.sort"
+	      <div class="oo_sortchooser"> Sort by: <select name="sort" ng-model="query.state.sort"
 		      ng-change="submitSearch(form)">
 		<option value="best" selected="selected">Best matches</option>
 		<option value="date">Date</option>
 		<option value="relevance">Relevance</option>
-	      </select>
-
+		</select>
+</div>
               <span class="input-group-btn">
-                <button type="button" class="btn btn-default" ng-click="clearSearch()">
+                <button type="button" class="btn btn-default oo_gobutton" ng-click="submitSearch()">
+                  <i class="fa fa-refresh"></i> Go</button>
+              </span>
+
+	      
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default oo_resetbutton" ng-click="clearSearch()">
                   <i class="fa fa-refresh"></i> Reset</button>
               </span>
             </div>
-          </div>
+            </div>
         </form>
 
         <div id="navbar" class="collapse navbar-collapse navbar-right">
