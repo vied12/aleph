@@ -35,6 +35,7 @@ def index_package(package, plain_text, normalized_text):
     body['source_url'] = source.meta.get('source_url')
     body['created_at'] = source.meta.get('created_at')
     body['updated_at'] = source.meta.get('updated_at')
+    body['filed_at'] = source.meta.get('filed_at')
     body['extension'] = source.meta.get('extension')
     body['mime_type'] = source.meta.get('mime_type')
 

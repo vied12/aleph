@@ -6,6 +6,8 @@ from aleph.core import db
 from aleph.model import CrawlState
 from aleph.processing import ingest_url, ingest
 
+from aleph.contrib.openoil.metadata import guess_filing_date_from_meta
+
 log = logging.getLogger(__name__)
 CRAWLERS = {}
 
@@ -42,8 +44,10 @@ class Crawler(object):
             'extension': extension,
             'source_url': source_url,
             'source_file': source_file,
-            'extract_article': article
+            'extract_article': article,
         })
+        filed_at = guess_filing_date_from_meta(meta)
+        meta['filed_at'] = filed_at.strftime('%Y%m%d') if filed_at else None
         return dict([(k, v) for k, v in meta.items() if v is not None])
 
     def emit_url(self, url, package_id=None, **kwargs):

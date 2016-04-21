@@ -30,8 +30,20 @@ def guess_filing_date_sa(val):
     dt = datetime.datetime.fromtimestamp(int(milliseconds)/1000, offset)
     return dt
 
-def guess_filing_date(body):
-    for ad in body['attributes']:
+def guess_filing_date_from_meta(meta):
+    for key in ('filing_date', 'Filing Date', 'date', 'filingDate', 'announcement_date'):
+        if key in meta:
+            value = meta[key]
+            if sa_date_format.match(value):
+                return guess_filing_date_sa(value)
+            try:
+                return parse(value)
+            except (ValueError):
+                continue
+    return None
+
+def guess_filing_date(attributes):
+    for ad in attributes:
         for key in ('filing_date', 'Filing Date', 'date', 'filingDate', 'announcement_date'):
             if ad['name'] == key:
                 if sa_date_format.match(ad['value']):
@@ -43,7 +55,7 @@ def guess_filing_date(body):
     return None
 
 def fix_date(body):
-    filing_date = guess_filing_date(body)
+    filing_date = guess_filing_date(body['attributes'])
     print('guessed filing date for %s as %s' % (body['collection'], filing_date.strftime(date_string_format) if filing_date else '[None]'))
     if filing_date:
         body['filed_at'] = filing_date.strftime('%Y%m%d')
