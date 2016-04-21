@@ -187,6 +187,7 @@ def _build_qstr_query(args):
                         "query_string": {
                             "query": qstr,
                             "fields": QUERY_FIELDS,
+                            "default_operator": 'AND',
                             }
                     },
 
