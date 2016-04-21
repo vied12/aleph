@@ -5,6 +5,12 @@ aleph.controller('AppCtrl', ['$scope', '$rootScope', '$routeParams', '$window', 
   $scope.session = {logged_in: false};
   $scope.query = Query;
   $scope.flash = Flash;
+  $scope.sortorder = $scope.query.sort || ["best"];
+
+  $scope.$watch('sortorder', function(){
+      $scope.query.state.sort = $scope.sortorder;
+      $scope.submitSearch();
+      });
 
     window.scp = $scope;
 
