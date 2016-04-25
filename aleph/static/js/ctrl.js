@@ -91,6 +91,46 @@ aleph.controller('AppCtrl', ['$scope', '$rootScope', '$routeParams', '$window', 
     }
   };
 
+      $scope.show_login_modal = function(){
+	  var login_modal = $modal.open({
+	      templateUrl: 'user/login_modal.html',
+	      backdrop: true,
+	      controller: function($scope, $modalInstance){
+		  $scope.cancel = function(){
+		      $modalInstance.dismiss('cancel');
+		  };
+
+		  $scope.handle_login = function(){
+		      $modalInstance.close($('#login_modal'));
+		  };
+	      }
+
+});
+	  login_modal.result.then(
+	      function(mdl){
+		  console.log('hit email modal')
+		  var email = $(mdl).find('[name=email]').val();
+		  var pw =  $(mdl).find('[name=password]').val();
+		  console.log('all the logins');
+		  console.log(email, pw);
+		$http({
+		    url: '/api/1/sessions/callback/ooemail',
+		    method: 'GET', // XXX
+		    params: {
+			'email': email,
+			'password': pw}
+		}).success(function(data){
+		    Flash.message('logged in', 'success');		    
+		    window.scp.session.logged_in = true;
+		}).error(function(data){
+		    Flash.message('bad login', 'error');
+		    });
+
+},
+	      function(){console.log('quit email modal')});
+	  };
+	      
+
     $scope.emailAlertButton = function(){
 	var emailModal = $modal.open({
         templateUrl: 'alert_create_form.html',

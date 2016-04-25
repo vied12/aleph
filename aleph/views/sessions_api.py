@@ -1,4 +1,4 @@
-from flask import session, Blueprint, redirect, request
+from flask import session, Blueprint, redirect, request, abort
 from flask.ext.login import login_user, logout_user, current_user
 from werkzeug.exceptions import BadRequest
 from apikit import jsonify
@@ -58,12 +58,14 @@ def ooemail_authorized():
     So, we use this to handle our sign-in
     '''
     usr = User.by_email(request.args.get('email'))
+    if usr is None:
+        abort(403)
     ok = usr.check_pw(request.args.get('password'))
     if ok:
         login_user(usr)
         return 'oo email authorized'
     else:
-        return 'bad login details'
+        abort(403)
 
 @blueprint.route('/api/1/sessions/register/ooemail')
 def ooemail_register():

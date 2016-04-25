@@ -96,10 +96,18 @@ API of world's oil concessions</a> </li><li> <a href="http://openoil.net/corpora
 	    <li>
 
 	    </li>
+            <li ng-show="!session.logged_in && session.logins.ooemail" ng-cloak>
+              {% raw %}
+                <a href='#' ng-click='show_login_modal()' target='_self'>
+                  Sign in with email
+                </a>
+              {% endraw %}
+            </li>
+
             <li ng-show="!session.logged_in && session.logins.twitter" ng-cloak>
               {% raw %}
                 <a href='{{session.logins.twitter}}' target='_self'>
-                  Sign in
+                  Sign in with twitter
                 </a>
               {% endraw %}
             </li>
