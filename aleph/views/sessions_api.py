@@ -50,6 +50,18 @@ def login(provider):
 
 handler = PROVIDERS.get('twitter')
 
+@blueprint.route('/api/1/sessions/callback/ooemail')
+def ooemail_authorized(resp):
+    '''
+    This is a callback for when we are returning from the
+    external auth provider.
+    So, we use this to handle our sign-in
+    '''
+    return 'oo email authorized'
+
+@blueprint.route('/api/1/sessions/register/ooemail')
+def ooemail_login(resp):
+    return 'oo email authorized'
 
 @blueprint.route('/api/1/sessions/callback/twitter')
 @handler.authorized_handler

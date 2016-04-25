@@ -27,9 +27,27 @@ class Stub():
         return inner
 
 
+class OpenOilEmail(object):
+
+    def __init__(self, name):
+        self.name = name
+
+    def authorize(self, **kwargs):
+        '''
+        This should handle logins not done via angular
+        '''
+        return 'openoil authorization'
+
+    def authorized_handler(self, f):
+        @wraps(f)
+        def inner(*a, **kw):
+            return self.authorize()
+        return inner
+
 PROVIDERS = {
     'twitter': Stub('twitter'),
-    'facebook': Stub('facebook')
+    'facebook': Stub('facebook'),
+    'ooemail': OpenOilEmail('OpenOil Email'),
 }
 
 
