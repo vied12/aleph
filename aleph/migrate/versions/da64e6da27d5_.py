@@ -23,24 +23,6 @@ def upgrade():
     sa.Column('query', sa.Unicode(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('source_user',
-    sa.Column('source_slug', sa.Unicode(), nullable=True),
-    sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['source_slug'], ['source.slug'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], )
-    )
-    op.create_table('selector',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('text', sa.Unicode(), nullable=True),
-    sa.Column('normalized', sa.Unicode(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('entity_id', sa.Unicode(length=50), nullable=True),
-    sa.ForeignKeyConstraint(['entity_id'], ['entity.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_index(op.f('ix_selector_normalized'), 'selector', ['normalized'], unique=False)
-    op.create_index(op.f('ix_selector_text'), 'selector', ['text'], unique=False)
     ### end Alembic commands ###
 
 
