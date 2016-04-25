@@ -181,6 +181,8 @@ def clean_query_input(q):
     print(q)
     # remove trailing/leading whitespace
     q = q.strip()
+    # uppercase everything (this means AND and OR get recognized)
+    q = q.upper()
     return q
 
 def _build_qstr_query(args):
