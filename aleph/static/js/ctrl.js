@@ -108,11 +108,8 @@ aleph.controller('AppCtrl', ['$scope', '$rootScope', '$routeParams', '$window', 
 });
 	  login_modal.result.then(
 	      function(mdl){
-		  console.log('hit email modal')
 		  var email = $(mdl).find('[name=email]').val();
 		  var pw =  $(mdl).find('[name=password]').val();
-		  console.log('all the logins');
-		  console.log(email, pw);
 		$http({
 		    url: '/api/1/sessions/callback/ooemail',
 		    method: 'GET', // XXX
@@ -127,9 +124,54 @@ aleph.controller('AppCtrl', ['$scope', '$rootScope', '$routeParams', '$window', 
 		    });
 
 },
-	      function(){console.log('quit email modal')});
+	      function(){});
 	  };
 	      
+
+
+      $scope.show_register_modal = function(){
+	  var register_modal = $modal.open({
+	      templateUrl: 'user/register_modal.html',
+	      backdrop: true,
+	      controller: function($scope, $modalInstance){
+		  $scope.cancel = function(){
+		      $modalInstance.dismiss('cancel');
+		  };
+
+		  $scope.handle_register = function(){
+		      $modalInstance.close($('#register_modal'));
+		  };
+	      }
+
+});
+	  register_modal.result.then(
+	      function(mdl){
+		  var email = $(mdl).find('[name=email]').val();
+		  var pw1 =  $(mdl).find('[name=password1]').val();
+		  var pw2 =  $(mdl).find('[name=password2]').val();
+		  console.log(email, pw1, pw2);
+		  if(pw1 != pw2){
+		      Flash.message('passwords do not match', 'error');
+		      return;
+		      }
+		$http({
+		    url: '/api/1/sessions/register/ooemail',
+		    method: 'GET', // XXX
+		    params: {
+			'email': email,
+			'pw': pw1}
+		}).success(function(data){
+		    Flash.message('Registered', 'success');		    
+		    window.scp.session.logged_in = true;
+		}).error(function(data){
+		    Flash.message('bad registration details', 'error');
+		    });
+
+},
+	      function(){});
+	  };
+	      
+
 
     $scope.emailAlertButton = function(){
 	var emailModal = $modal.open({

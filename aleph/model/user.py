@@ -152,18 +152,7 @@ class User(db.Model):
             password = get_hmac(pw)) 
         db.session.add(src)
         db.session.commit()
-        print('created by email, %s %s' % (email, pw))
-        
-    @classmethod
-    def create(cls, data, user=None):
-        src = cls()
-        data = SourceCreateForm().deserialize(data)
-        src.slug = data.get('slug')
-        src.crawler = data.get('crawler')
-        src.update_data(data, user)
-        db.session.add(src)
         return src
-
 
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)

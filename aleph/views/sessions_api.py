@@ -69,8 +69,8 @@ def ooemail_authorized():
 
 @blueprint.route('/api/1/sessions/register/ooemail')
 def ooemail_register():
-    # XXX should all be post, dontchaknow
-    us = User.create_by_email(request.args.get('email'), request.args.get('pw'))
+    user = User.create_by_email(request.args.get('email'), request.args.get('pw'))
+    login_user(user)
     return 'created oo email'
 
 @blueprint.route('/api/1/sessions/callback/twitter')
